@@ -1,7 +1,8 @@
 /**
- * @file Defines the main router for the application.
+ * @file Defines the router for the API.
  * @module router
  * @author Fredrik Svensson
+ * @version 0.1.0
  * @since 0.1.0
  */
 
