@@ -1,0 +1,346 @@
+openapi: 3.0.0
+info:
+  title: NjordBreeze API
+  version: 0.1.0
+  description: >-
+    API for integrating personal weather station data with SMHI open data for
+    comparison and analysis.
+  contact:
+    name: Fredrik Svensson
+    email: fs222id@student.lnu.se
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://cscloud8-57.lnu.se/njordbreeze/
+    description: Production server
+paths:
+  /auth/login:
+    post:
+      summary: Log in to the API
+      description: Logs in to the API and returns an access token.
+      tags:
+        - Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the user.
+                passphrase:
+                  type: string
+                  description: The passphrase of the user.
+      responses:
+        '200':
+          description: User logged in successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: The access token for the user.
+        '401':
+          description: Unauthorized.
+  /auth/logout:
+    post:
+      summary: Log out of the API
+      description: Logs out of the API and invalidates the access token.
+      tags:
+        - Authorization
+      responses:
+        '200':
+          description: User logged out successfully.
+        '401':
+          description: Unauthorized.
+  /auth/refresh:
+    get:
+      summary: Refresh access token
+      description: Refreshes the access token for the user.
+      tags:
+        - Authorization
+      responses:
+        '200':
+          description: Access token refreshed successfully.
+        '401':
+          description: Unauthorized.
+  /:
+    get:
+      summary: Get API status
+      description: Returns the status of the API.
+      tags:
+        - Status
+      responses:
+        '200':
+          description: API is up and running.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: >-
+                      Welcome to the NjordBreeze API. Use our endpoints to
+                      interact with weather data.
+                  documentation:
+                    type: string
+                    example: https://cscloud8-57.lnu.se/njordbreeze/docs
+  /stations:
+    get:
+      summary: Get all weather stations
+      description: Returns all weather stations in the system.
+      tags:
+        - Weather Stations
+      responses:
+        '200':
+          description: A list of weather stations.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WeatherStation'
+    post:
+      summary: Register a new weather station
+      description: Registers a new weather station in the system.
+      tags:
+        - Weather Stations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WeatherStationRegistration'
+      responses:
+        '201':
+          description: Weather station registered successfully.
+        '401':
+          description: Unauthorized.
+  /stations/{id}:
+    get:
+      summary: Get information about a specific weather station
+      description: Returns information about a specific weather station in the system.
+      tags:
+        - Weather Stations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The weather station's ID.
+      responses:
+        '200':
+          description: Successful response with weather station information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherStation'
+        '404':
+          description: Weather station not found.
+    put:
+      summary: Update information about a specific weather station
+      description: Updates information about a specific weather station in the system.
+      tags:
+        - Weather Stations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The weather station's ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WeatherStation'
+      responses:
+        '200':
+          description: Weather station updated successfully.
+        '401':
+          description: Unauthorized.
+    delete:
+      summary: Delete a specific weather station
+      description: Deletes a specific weather station from the system.
+      tags:
+        - Weather Stations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The weather station's ID.
+      responses:
+        '200':
+          description: Weather station deleted successfully.
+        '401':
+          description: Unauthorized.
+  /users:
+    post:
+      summary: Create a new user
+      description: Creates a new user in the system.
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: User created successfully.
+  /users/{id}:
+    get:
+      summary: Get information about a specific user
+      description: Returns information about a specific user in the system.
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The user's ID.
+      responses:
+        '200':
+          description: Successful response with user information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found.
+    put:
+      summary: Update information about a specific user
+      description: Updates information about a specific user in the system.
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The user's ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '200':
+          description: User updated successfully.
+        '404':
+          description: User not found.
+    delete:
+      summary: Delete a specific user
+      description: Deletes a specific user from the system.
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The user's ID.
+      responses:
+        '200':
+          description: User deleted successfully.
+        '404':
+          description: User not found.
+  /weather/current:
+    get:
+      summary: Get current weather conditions
+      description: >-
+        Returns current weather conditions from SMHI open data for a specified
+        location.
+      tags:
+        - Weather Data
+      parameters:
+        - in: query
+          name: location
+          schema:
+            type: string
+          required: true
+          description: The location to fetch current weather conditions for.
+      responses:
+        '200':
+          description: Successful response with current weather conditions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherData'
+        '404':
+          description: Location not found.
+components:
+  schemas:
+    WeatherStation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier for the weather station.
+        name:
+          type: string
+          description: The name of the weather station.
+        location:
+          type: string
+          description: The location of the weather station.
+    WeatherStationRegistration:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the weather station.
+        location:
+          type: string
+          description: The location of the weather station.
+    NewUser:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The user's full name.
+        email:
+          type: string
+          format: email
+          description: The user's email address.
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The user's ID.
+        name:
+          type: string
+          description: The user's full name.
+        email:
+          type: string
+          format: email
+          description: The user's email address.
+    WeatherData:
+      type: object
+      properties:
+        temperature:
+          type: number
+          format: float
+          description: Temperature in Celsius.
+        windSpeed:
+          type: number
+          format: float
+          description: Wind speed in m/s.
+tags: []
