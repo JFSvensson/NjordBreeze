@@ -19,6 +19,12 @@ const options = {
         url: 'https://opensource.org/licenses/MIT'
       }
     },
+    servers: [
+      {
+        url: 'https://cscloud8-57.lnu.se/njordbreeze/',
+        description: 'Production server'
+      }
+    ]
   },
   apis: ['./src/routes/*.js', './src/routes/api/v1/**/*.js']
 }
