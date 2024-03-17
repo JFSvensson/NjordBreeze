@@ -30,19 +30,19 @@ export const router = express.Router()
  *              passphrase:
  *                type: string
  *                description: The passphrase of the user.
- *      responses:
- *        '200':
- *          description: User logged in successfully.
- *          content:
- *            application/json:
- *              schema:
- *                type: object
- *                properties:
- *                  accessToken:
- *                    type: string
- *                    description: The access token for the user.
- *        '401':
- *          description: Unauthorized.
+ *    responses:
+ *      '200':
+ *        description: User logged in successfully.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                accessToken:
+ *                  type: string
+ *                  description: The access token for the user.
+ *      '401':
+ *        description: Unauthorized.
  */
 router.post('/login', (req, res) => {
   res.send('Logged in!') // TODO: Implement login
