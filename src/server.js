@@ -14,8 +14,8 @@ import session from 'express-session'
 import helmet from 'helmet'
 import logger from 'morgan'
 import cookieParser from 'cookie-parser'
-import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
+import openapiSpecification from './openapiDef.js'
 import { router } from './routes/router.js'
 
 // Create an Express application.
@@ -41,22 +41,8 @@ app.use(
   })
 )
 
-// Swagger definition
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'NjordBreeze API',
-      version: '0.1.0',
-      description: 'API for NjordBreeze, an application for comparing weather from your personal weather station with open data from SMHI.'
-    }
-  },
-  apis: ['./src/routes/*.js', './src/routes/api/v1/**/*.js']
-}
-// Initialize swagger-jsdoc -> returns validated swagger spec in json format
-const swaggerDocs = swaggerJSDoc(swaggerOptions)
 // Serve Swagger docs
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification))
 
 // Set up a morgan logger using the dev format for log entries.
 app.use(logger('dev'))
