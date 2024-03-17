@@ -13,11 +13,25 @@ export const router = express.Router()
  * @openapi
  * /:
  *   get:
- *     description: Welcome to swagger-jsdoc!
+ *     summary: Get API status
+ *     description: Returns the status of the API.
+ *     tags:
+ *      - Status
  *     responses:
  *       200:
- *         description: Returns a mysterious string.
+ *         description: API is up and running.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Welcome to the NjordBreeze API. Use our endpoints to interact with weather data.
+ *                 documentation:
+ *                   type: string
+ *                   example: https://cscloud8-57.lnu.se/njordbreeze/docs
  */
 router.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Welcome to the NjordBreeze API. Use our endpoints to interact with weather data.')
 })
