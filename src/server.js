@@ -51,7 +51,7 @@ const swaggerOptions = {
       description: 'API for NjordBreeze, an application for comparing weather from your personal weather station with open data from SMHI.'
     }
   },
-  apis: ['./src/routes/router.js']
+  apis: ['./src/routes/*.js', './src/routes/api/v1/**/*.js']
 }
 // Initialize swagger-jsdoc -> returns validated swagger spec in json format
 const swaggerDocs = swaggerJSDoc(swaggerOptions)
