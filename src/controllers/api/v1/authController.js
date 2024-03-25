@@ -86,4 +86,16 @@ export class AuthController {
       next(err)
     }
   }
+  /**
+   * Logs out a user.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   */
+  logout (req, res) {
+    res
+      .status(200)
+      .json({
+        message: 'Logged out successfully.'
+      })
+  }
 }

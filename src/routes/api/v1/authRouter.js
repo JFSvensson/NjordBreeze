@@ -83,9 +83,7 @@ router.post('/login', (req, res, next) => controller.login(req, res, next))
  *      '401':
  *        description: Unauthorized.
  */
-router.post('/logout', (req, res) => {
-  res.send('Logged out!') // TODO: Implement logout
-})
+router.post('/logout', (req, res) => controller.logout(req, res))
 
 /**
  * @openapi
