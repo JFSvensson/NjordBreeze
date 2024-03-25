@@ -6,12 +6,15 @@
  */
 
 import createError from 'http-errors'
-import { User } from '../../../models/user.js'
-
+import { AuthService } from '../../../services/api/v1/authService.js'
 /**
  * Handles requests regarding authorization.
  */
 export class AuthController {
+  constructor() {
+    this.authService = new AuthService()
+  }
+
   /**
    * Register and create a new user.
    * @param {Request} req - The request object.
@@ -20,21 +23,13 @@ export class AuthController {
    */
   async register(req, res, next) {
     try {
-      const user = new User({
-        username: req.body.username,
-        passphrase: req.body.passphrase,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email
-      })
-      await user.save()
+      const user = await this.authService.createUser(req.body)
 
       res
         .status(201)
         .json({ id: user.id })
     } catch (error) {
       let err = error
-
       if (err.code === 11000) {
         // Duplicated keys.
         err = createError(409)
