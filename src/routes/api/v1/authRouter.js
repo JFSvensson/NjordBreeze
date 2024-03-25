@@ -101,9 +101,7 @@ router.post('/logout', middleware.authMiddleware.bind(middleware), (req, res) =>
  *       '401':
  *         description: Unauthorized.
  */
-router.get('/auth/refresh', (req, res) => {
-  res.send('Access token refreshed!') // TODO: Implement refresh
-})
+router.get('/refresh', middleware.authMiddleware.bind(middleware), (req, res) => controller.refresh(req, res))
 
 /**
  * @openapi

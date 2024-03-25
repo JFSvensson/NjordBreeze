@@ -19,6 +19,9 @@ export class AuthController {
   constructor() {
     this.authService = new AuthService()
     this.tokenBlacklist = new TokenBlacklist()
+    // WARNING! PRODUCTION CODE SHOULD NOT CONTAIN THIS LINE! TODO: REMOVE LINES BELOW!
+    process.env.ACCESS_TOKEN_SECRET = fs.readFileSync('./private.pem', 'utf8')
+    process.env.REFRESH_TOKEN_SECRET = fs.readFileSync('./private.pem', 'utf8')
   }
 
   /**
@@ -68,17 +71,21 @@ export class AuthController {
         email: user.email
       }
 
-      // WARNING! PRODUCTION CODE SHOULD NOT CONTAIN THIS LINE! TODO: REMOVE THIS LINE!
-      process.env.ACCESS_TOKEN_SECRET = fs.readFileSync('./private.pem', 'utf8')
       const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
         algorithm: 'RS256',
         expiresIn: process.env.ACCESS_TOKEN_LIFE
       })
 
+      const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+        algorithm: 'RS256',
+        expiresIn: process.env.REFRESH_TOKEN_LIFE
+      })
+
       res
         .status(200)
         .json({
-          access_token: accessToken
+          access_token: accessToken,
+          refresh_token: refreshToken
         })
     } catch (error) {
       // Authentication failed.
@@ -92,12 +99,39 @@ export class AuthController {
   }
 
   /**
+   * Refreshes the access token.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @param {NextFunction} next - The next middleware function.
+   * @returns {void}
+   * @throws {Error} Throws an error if the token is invalid.
+   */
+  async refresh(req, res, next) {
+    const refreshToken = req.body.refreshToken
+    if (!refreshToken) {
+      return res.sendStatus(401)
+    }
+  
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err) {
+        return res.sendStatus(403)
+      }
+
+      const accessToken = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET, {
+        algorithm: 'RS256',
+        expiresIn: process.env.ACCESS_TOKEN_LIFE
+      })
+  
+      res.json({ access_token: accessToken })
+    })
+  }
+
+  /**
    * Logs out a user.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.
    */
   logout (req, res) {
-    console.log(req.headers.authorization)
     const authHeader = req.headers.authorization
     if (authHeader) {
       // Extract the token from the Authorization header ("Bearer <token>"").
