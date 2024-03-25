@@ -14,4 +14,9 @@ export class AuthService {
     await user.save()
     return user
   }
+
+  async authenticateUser(username, passphrase) {
+    const user = await User.authenticate(username, passphrase)
+    return user
+  }
 }
