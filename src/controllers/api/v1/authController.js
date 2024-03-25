@@ -2,6 +2,7 @@
  * @file Defines the authorization controller for the application.
  * @module controller
  * @author Fredrik Svensson
+ * @version 0.1.0
  * @since 0.1.0
  */
 
@@ -9,12 +10,15 @@ import jwt from 'jsonwebtoken'
 import fs from 'fs'
 import createError from 'http-errors'
 import { AuthService } from '../../../services/api/v1/authService.js'
+import { TokenBlacklist } from '../../../services/api/v1/tokenBlackList.js'
+
 /**
  * Handles requests regarding authorization.
  */
 export class AuthController {
   constructor() {
     this.authService = new AuthService()
+    this.tokenBlacklist = new TokenBlacklist()
   }
 
   /**
@@ -86,12 +90,20 @@ export class AuthController {
       next(err)
     }
   }
+
   /**
    * Logs out a user.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.
    */
   logout (req, res) {
+    console.log(req.headers.authorization)
+    const authHeader = req.headers.authorization
+    if (authHeader) {
+      // Extract the token from the Authorization header ("Bearer <token>"").
+      const token = authHeader.split(' ')[1]
+      this.tokenBlacklist.add(token)
+    }
     res
       .status(200)
       .json({
