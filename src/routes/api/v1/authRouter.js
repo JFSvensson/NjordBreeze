@@ -67,9 +67,7 @@ router.post('/register', (req, res, next) => controller.register(req, res, next)
  *      '401':
  *        description: Unauthorized.
  */
-router.post('/login', (req, res) => {
-  res.send('Logged in!') // TODO: Implement login
-})
+router.post('/login', (req, res, next) => controller.login(req, res, next))
 
 /**
  * @openapi
