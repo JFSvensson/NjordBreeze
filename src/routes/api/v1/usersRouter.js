@@ -12,28 +12,6 @@ export const router = express.Router()
 
 /**
  * @openapi
- * /users:
- *   post:
- *    summary: Create a new user
- *    description: Creates a new user in the system.
- *    tags:
- *      - Users
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            $ref: '#/components/schemas/NewUser'
- *    responses:
- *      '201':
- *        description: User created successfully.
- */
-router.post('/', (req, res) => {
-  res.send('User created!') // TODO: Implement user creation
-})
-
-/**
- * @openapi
  * /users/{id}:
  *   get:
  *     summary: Get information about a specific user
@@ -121,16 +99,6 @@ router.delete('/:id', (req, res) => {
  * @openapi
  * components:
  *   schemas:
- *     NewUser:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *           description: The user's full name.
- *         email:
- *           type: string
- *           format: email
- *           description: The user's email address.
  *     User:
  *       type: object
  *       properties:

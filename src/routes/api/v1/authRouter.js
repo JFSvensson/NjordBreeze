@@ -11,6 +11,28 @@ export const router = express.Router()
 
 /**
  * @openapi
+ * /auth/register:
+ *   post:
+ *    summary: Create a new user
+ *    description: Creates a new user in the system.
+ *    tags:
+ *      - Authorization
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/NewUser'
+ *    responses:
+ *      '201':
+ *        description: User created successfully.
+ */
+router.post('/register', (req, res) => {
+  res.send('User created!') // TODO: Implement user creation
+})
+
+/**
+ * @openapi
  * /auth/login:
  *  post:
  *    summary: Log in to the API
@@ -83,3 +105,19 @@ router.post('/logout', (req, res) => {
 router.get('/auth/refresh', (req, res) => {
   res.send('Access token refreshed!') // TODO: Implement refresh
 })
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     NewUser:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: The user's full name.
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: The user's email address.
+ */

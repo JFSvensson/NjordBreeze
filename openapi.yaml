@@ -15,6 +15,21 @@ servers:
   - url: https://cscloud8-57.lnu.se/njordbreeze/
     description: Production server
 paths:
+  /auth/register:
+    post:
+      summary: Create a new user
+      description: Creates a new user in the system.
+      tags:
+        - Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: User created successfully.
   /auth/login:
     post:
       summary: Log in to the API
@@ -184,21 +199,6 @@ paths:
           description: Weather station deleted successfully.
         '401':
           description: Unauthorized.
-  /users:
-    post:
-      summary: Create a new user
-      description: Creates a new user in the system.
-      tags:
-        - Users
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewUser'
-      responses:
-        '201':
-          description: User created successfully.
   /users/{id}:
     get:
       summary: Get information about a specific user
@@ -287,6 +287,16 @@ paths:
           description: Location not found.
 components:
   schemas:
+    NewUser:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The user's full name.
+        email:
+          type: string
+          format: email
+          description: The user's email address.
     WeatherStation:
       type: object
       properties:
@@ -309,16 +319,6 @@ components:
         location:
           type: string
           description: The location of the weather station.
-    NewUser:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The user's full name.
-        email:
-          type: string
-          format: email
-          description: The user's email address.
     User:
       type: object
       properties:
