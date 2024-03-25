@@ -13,7 +13,15 @@ export const router = express.Router()
 
 router.use('/api/v1', v1Router)
 
-//Error handling
+// Route for testing purposes. TODO: Remove before production.
+router.get('/', (req, res) => {
+  res.status(200).json({ message: 'Welcome, but this is not the API your looking for...' })
+})
+router.get('/error', (req, res) => {
+  res.status(500).end()
+})
+
+// Error handling
 router.use('*', (req, res, next) => {
   const error = new Error('Not Found')
   error.status = 404

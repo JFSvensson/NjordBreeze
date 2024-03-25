@@ -10,7 +10,7 @@
 
 // Import modules.
 import express from 'express'
-import session from 'express-session'
+// import session from 'express-session'
 import helmet from 'helmet'
 import logger from 'morgan'
 import cookieParser from 'cookie-parser'
@@ -22,7 +22,7 @@ import { router } from './routes/router.js'
 const app = express()
 
 // Set base URL for all relative URL:s in document.
-const baseURL = process.env.BASE_URL || '/'
+// const baseURL = process.env.BASE_URL || '/'
 
 // Setup helmet to secure the application.
 app.use(helmet())
@@ -60,31 +60,31 @@ app.use(cookieParser())
 //   next()
 // })
 
-// Session middleware.
-const sessionMiddleware = {
-  name: process.env.SESSION_NAME,
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24, // 24 hours
-    sameSite: 'strict'
-  }
-}
+// // Session middleware.
+// const sessionMiddleware = {
+//   name: process.env.SESSION_NAME,
+//   secret: process.env.SESSION_SECRET,
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: {
+//     maxAge: 1000 * 60 * 60 * 24, // 24 hours
+//     sameSite: 'strict'
+//   }
+// }
 
-// Production settings.
-if (app.get('env') === 'production') {
-  app.set('trust proxy', 1) // Running behind reverse proxy, trust first proxy
-  sessionMiddleware.cookie.secure = true // Only serve secure cookies, https
-}
+// // Production settings.
+// if (app.get('env') === 'production') {
+//   app.set('trust proxy', 1) // Running behind reverse proxy, trust first proxy
+//   sessionMiddleware.cookie.secure = true // Only serve secure cookies, https
+// }
 
-app.use(session(sessionMiddleware))
+// app.use(session(sessionMiddleware))
 
-// Middleware for passing the base URL to the views.
-app.use((req, res, next) => {
-  res.locals.baseURL = baseURL
-  next()
-})
+// // Middleware for passing the base URL to the views.
+// app.use((req, res, next) => {
+//   res.locals.baseURL = baseURL
+//   next()
+// })
 
 // Register routes.
 app.use('/', router)
