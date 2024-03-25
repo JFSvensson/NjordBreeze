@@ -5,7 +5,7 @@ module.exports = {
       definedTags: ['swagger', 'openapi']
     }],
     'jsdoc/check-indentation': ['error', {
-      excludeTags: ['swagger', 'openapi']
+      excludeTags: ['*', 'swagger', 'openapi']
     }]
   }
 }
