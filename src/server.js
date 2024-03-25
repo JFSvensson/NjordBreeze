@@ -52,6 +52,9 @@ try {
   // Set up a morgan logger using the dev format for log entries.
   app.use(logger('dev'))
 
+  // Parse requests of the content type application/json.
+  app.use(express.json())
+
   // Use the cookie-parser middleware
   app.use(cookieParser())
 
