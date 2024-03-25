@@ -7,8 +7,11 @@
  */
 
 import express from 'express'
+import { UsersController } from '../../../controllers/api/v1/usersController.js'
 
 export const router = express.Router()
+
+const controller = new UsersController()
 
 /**
  * @openapi
@@ -35,9 +38,7 @@ export const router = express.Router()
  *       '404':
  *         description: User not found.
  */
-router.get('/:id', (req, res) => {
-  res.send('User information') // TODO: Implement user information
-})
+router.get('/:id', (req, res) => controller.getUser(req, res))
 
  /**
  * @openapi
