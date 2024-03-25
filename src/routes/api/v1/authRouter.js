@@ -7,10 +7,12 @@
 
 import express from 'express'
 import { AuthController } from '../../../controllers/api/v1/authController.js'
+import { AuthMiddleware } from '../../../middleware/authMiddleware.js'
 
 export const router = express.Router()
 
 const controller = new AuthController()
+const middleware = new AuthMiddleware(controller)
 
 /**
  * @openapi
@@ -83,7 +85,7 @@ router.post('/login', (req, res, next) => controller.login(req, res, next))
  *      '401':
  *        description: Unauthorized.
  */
-router.post('/logout', (req, res) => controller.logout(req, res))
+router.post('/logout', middleware.authMiddleware.bind(middleware), (req, res) => controller.logout(req, res))
 
 /**
  * @openapi
