@@ -78,25 +78,25 @@ schema.virtual('id').get(function () {
 
 // Salts and hashes password before save.
 schema.pre('save', async function () {
-  this.password = await bcrypt.hash(this.password, 10)
+  this.passphrase = await bcrypt.hash(this.passphrase, 10)
 })
 
 /**
  * Authenticates a user.
  *
- * @param {string} username - ...
- * @param {string} password - ...
- * @returns {Promise<User>} ...
+ * @param {string} username - The username.
+ * @param {string} passphrase - The passphrase.
+ * @returns {Promise<User>} - The user.
  */
-schema.statics.authenticate = async function (username, password) {
+schema.statics.authenticate = async function (username, passphrase) {
   const user = await this.findOne({ username })
 
   // If no user found or password is wrong, throw an error.
-  if (!(await bcrypt.compare(password, user?.password))) {
+  if (!(await bcrypt.compare(passphrase, user?.passphrase))) {
     throw new Error('Invalid credentials.')
   }
 
-  // User found and password correct, return the user.
+  // User found and passphrase correct, return the user.
   return user
 }
 
