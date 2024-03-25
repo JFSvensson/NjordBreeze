@@ -103,25 +103,21 @@ try {
     if (err.status === 404) {
       return res
         .status(404)
-        // .sendFile(join(directoryName, 'views', 'errors', '404.html'))
         .end()
     }
 
-    // 500 Internal Server Error (in production, all other errors send this response).
-    if (req.app.get('env') !== 'development') {
+    // 500 Internal Server Error.
+    // In development, include error details.
+    if (req.app.get('env') === 'development') {
       return res
-        .status(500)
-        // .sendFile(join(directoryName, 'views', 'errors', '500.html'))
-        .end()
+        .status(err.status || 500)
+        .json({ error: err })
     }
 
-    // Development only!
-    // Only providing detailed error in development.
-
-    // Render the error page.
-    res
+    // In production, just send the status code.
+    return res
       .status(err.status || 500)
-      // .render('errors/error', { error: err })
+      .end()
   })
 
   // Starts the HTTP server listening for connections.
