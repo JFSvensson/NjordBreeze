@@ -7,6 +7,10 @@
  */
 
 import express from 'express'
+import { router as authRouter } from './authRouter.js'
+import { router as weatherRouter } from './weatherRouter.js'
+import { router as stationsRouter } from './stationsRouter.js'
+import { router as usersRouter } from './usersRouter.js'
 
 export const router = express.Router()
 
@@ -37,5 +41,11 @@ router.get('/', (req, res) => {
   res.json({
     message: 'Welcome to the NjordBreeze API. Use our endpoints to interact with weather data.',
     documentation: 'https://cscloud8-57.lnu.se/njordbreeze/docs'
+    // TODO: Implement HATEOAS links
   })
 })
+
+router.use('/auth', authRouter)
+router.use('/weather', weatherRouter)
+router.use('/stations', stationsRouter)
+router.use('/users', usersRouter)
