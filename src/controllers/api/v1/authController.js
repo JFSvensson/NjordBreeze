@@ -80,6 +80,7 @@ export class AuthController {
         algorithm: 'RS256',
         expiresIn: process.env.REFRESH_TOKEN_LIFE
       })
+      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
 
       res
         .status(200)
@@ -132,12 +133,19 @@ export class AuthController {
    * @param {Response} res - The response object.
    */
   logout (req, res) {
+    // Get access token from Authorization header and blacklist it.
     const authHeader = req.headers.authorization
     if (authHeader) {
       // Extract the token from the Authorization header ("Bearer <token>"").
       const token = authHeader.split(' ')[1]
       this.tokenBlacklist.add(token)
     }
+    // Get refresh token from cookie and blacklist it.
+    const refreshToken = req.cookies.refreshToken
+    if (refreshToken) {
+      this.tokenBlacklist.add(refreshToken)
+    }
+
     res
       .status(200)
       .json({
