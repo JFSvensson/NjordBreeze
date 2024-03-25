@@ -6,8 +6,11 @@
  */
 
 import express from 'express'
+import { AuthController } from '../../../controllers/api/v1/authController.js'
 
 export const router = express.Router()
+
+const controller = new AuthController()
 
 /**
  * @openapi
@@ -27,9 +30,7 @@ export const router = express.Router()
  *      '201':
  *        description: User created successfully.
  */
-router.post('/register', (req, res) => {
-  res.send('User created!') // TODO: Implement user creation
-})
+router.post('/register', (req, res, next) => controller.register(req, res, next))
 
 /**
  * @openapi
