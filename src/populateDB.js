@@ -5,6 +5,7 @@ import { connectToDatabase, disconnectFromDatabase } from './config/mongoose.js'
 import { faker } from '@faker-js/faker'
 import { User } from './models/user.js'
 import { Station } from './models/station.js'
+import { Weather } from './models/weather.js'
 
 /**
  * Populates the database with random data.
@@ -21,7 +22,7 @@ async function populateDB() {
 
       // Keep generating a username until we get one that's not in use
       do {
-        username = faker.lorem.word()
+        username = faker.lorem.word({ length: { min: 3, max: 25 }})
         user = await User.findOne({ username })
       } while (user)
 
@@ -56,6 +57,18 @@ async function populateDB() {
       })
 
       await station.save()
+
+      // Create 1-10 measurements for the station
+      const measurementCount = Math.floor(Math.random() * 10) + 1
+      for (let k = 0; k < measurementCount; k++) {
+        const weather = new Weather({
+          temperature: faker.number.int({ min: -20, max: 40 }),
+          windspeed: faker.number.int({ min: 0, max: 40 }),
+          station: station.stationname
+        })
+
+        await weather.save()
+      }
     }
   } 
 
