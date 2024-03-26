@@ -14,7 +14,12 @@ export class TokenBlacklist {
     this.blacklist[token] = true
   }
 
-  check(token) {
-    return !!this.blacklist[token]
+  /**
+   * Check if a token is blacklisted.
+   * @param {string} token - The token to check.
+   * @returns {boolean} True if the token is blacklisted, otherwise false.
+   */
+  isListed(token) {
+    return this.blacklist.includes(token)
   }
 }
