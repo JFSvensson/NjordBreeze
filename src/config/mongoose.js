@@ -2,7 +2,9 @@
  * @file This module contains the configuration for the Mongoose ODM.
  * @module config/mongoose-config
  * @author Mats Loock
- * @version 3.0.0
+ * @author Fredrik Svensson
+ * @version 3.1.0
+ * @since 0.1.0
  */
 
 import mongoose from 'mongoose'
@@ -37,4 +39,13 @@ export const connectToDatabase = async (connectionString) => {
 
   // Connect to the server.
   return mongoose.connect(connectionString)
+}
+
+/**
+ * Closes the connection to the database.
+ *
+ * @returns {Promise} Resolves when the connection has been closed.
+ */
+export const disconnectFromDatabase = async () => {
+  return mongoose.connection.close()
 }
