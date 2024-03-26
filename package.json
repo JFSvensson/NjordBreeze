@@ -23,6 +23,7 @@
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/preset-env": "^7.24.0",
+    "@faker-js/faker": "^8.4.1",
     "@lnu/eslint-config": "^1.1.10",
     "babel-jest": "^29.7.0",
     "babel-plugin-transform-import-meta": "^2.2.1",
