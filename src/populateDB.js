@@ -21,7 +21,7 @@ async function populateDB() {
 
       // Keep generating a username until we get one that's not in use
       do {
-        username = faker.person.middleName()
+        username = faker.lorem.word()
         user = await User.findOne({ username })
       } while (user)
 
