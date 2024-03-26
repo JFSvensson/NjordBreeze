@@ -20,6 +20,6 @@ export class TokenBlacklist {
    * @returns {boolean} True if the token is blacklisted, otherwise false.
    */
   isListed(token) {
-    return this.blacklist.includes(token)
+    return token in this.blacklist
   }
 }
