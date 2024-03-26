@@ -1,9 +1,10 @@
-import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+dotenv.config()
+
+import { connectToDatabase, disconnectFromDatabase } from './config/mongoose.js'
 import { faker } from '@faker-js/faker'
 import { User } from './models/user.js'
 import { Station } from './models/station.js'
-
-mongoose.connect('mongodb://localhost:27017/mongodb-nb')
 
 /**
  * Populates the database with random data.
@@ -11,24 +12,27 @@ mongoose.connect('mongodb://localhost:27017/mongodb-nb')
  * @returns {Promise<void>} A promise that resolves when the database has been populated.
  */
 async function populateDB() {
-  for (let i = 0; i < 50; i++) {
-    let username
-    let user
+  try {
+    await connectToDatabase(process.env.DB_CONNECTION_STRING)
 
-    // Keep generating a username until we get one that's not in use
-    do {
-      username = faker.person.middleName()
-      user = await User.findOne({ username })
-    } while (user)
+    for (let i = 0; i < 50; i++) {
+      let username
+      let user
 
-    // Create a new user with random data
-    user = new User({
-      username,
-      passphrase: faker.internet.password(),
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      email: faker.internet.email()
-    })
+      // Keep generating a username until we get one that's not in use
+      do {
+        username = faker.person.middleName()
+        user = await User.findOne({ username })
+      } while (user)
+
+      // Create a new user with random data
+      user = new User({
+        username,
+        passphrase: faker.internet.password(),
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        email: faker.internet.email()
+      })
 
     await user.save()
 
@@ -53,10 +57,16 @@ async function populateDB() {
 
       await station.save()
     }
-  }
+  } 
 
   console.log('Database populated!')
-  mongoose.connection.close()
+
+  } catch (error) {
+    console.error(error)
+    process.exit(1)
+  } finally {
+    await disconnectFromDatabase()
+  }
 }
 
 populateDB()
