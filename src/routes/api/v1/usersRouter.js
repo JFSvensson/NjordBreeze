@@ -8,10 +8,12 @@
 
 import express from 'express'
 import { UsersController } from '../../../controllers/api/v1/usersController.js'
+import { AuthMiddleware } from '../../../middleware/authMiddleware.js'
 
 export const router = express.Router()
 
 const controller = new UsersController()
+const middleware = new AuthMiddleware(controller)
 
 /**
  * @openapi
@@ -38,7 +40,7 @@ const controller = new UsersController()
  *       '404':
  *         description: User not found.
  */
-router.get('/:id', (req, res) => controller.getUser(req, res))
+router.get('/:id', middleware.authMiddleware.bind(middleware), (req, res) => controller.getUser(req, res))
 
  /**
  * @openapi
@@ -67,9 +69,7 @@ router.get('/:id', (req, res) => controller.getUser(req, res))
  *      '404':
  *        description: User not found.
  */
-router.put('/:id', (req, res) => {
-  res.send('User updated!') // TODO: Implement user update
-})
+router.put('/:id', (req, res) => controller.updateUser(req, res))
 
 /**
  * @openapi
