@@ -32,4 +32,22 @@ export class UsersController {
       res.status(500).json({ message: 'An error occurred while fetching the user' })
     }
   }
+
+  /**
+   * Update a specific user.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   */
+  async updateUser(req, res) {
+    try {
+      const user = await this.usersService.updateUser(req.params.id, req.body)
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' })
+      }
+      res.json(user)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ message: 'An error occurred while updating the user' })
+    }
+  }
 }
