@@ -92,9 +92,7 @@ router.put('/:id', middleware.authMiddleware.bind(middleware), (req, res) => con
  *       '404':
  *         description: User not found.
  */
-router.delete('/:id', (req, res) => {
-  res.send('User deleted!') // TODO: Implement user deletion
-})
+router.delete('/:id', middleware.authMiddleware.bind(middleware), (req, res) => controller.deleteUser(req, res))
 
 /**
  * @openapi
