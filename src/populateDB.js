@@ -53,7 +53,7 @@ async function populateDB() {
         stationname,
         description: faker.lorem.sentence(),
         location: faker.location.city(),
-        owner: user.username
+        owner: user.id
       })
 
       await station.save()
