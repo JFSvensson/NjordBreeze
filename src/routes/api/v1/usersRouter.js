@@ -9,11 +9,13 @@
 import express from 'express'
 import { UsersController } from '../../../controllers/api/v1/usersController.js'
 import { AuthMiddleware } from '../../../middleware/authMiddleware.js'
+import { CheckOwnerMiddleware } from '../../../middleware/checkOwnerMiddleware.js'
 
 export const router = express.Router()
 
 const controller = new UsersController()
-const middleware = new AuthMiddleware(controller)
+const checkAuthorization = new AuthMiddleware(controller)
+const checkOwner = new CheckOwnerMiddleware()
 
 /**
  * @openapi
@@ -40,7 +42,12 @@ const middleware = new AuthMiddleware(controller)
  *       '404':
  *         description: User not found.
  */
-router.get('/:id', middleware.authMiddleware.bind(middleware), (req, res) => controller.getUser(req, res))
+router.get(
+  '/:id', 
+  checkAuthorization.checkAuthorization.bind(checkAuthorization), 
+  checkOwner.checkOwner.bind(checkOwner), 
+  (req, res) => controller.getUser(req, res)
+)
 
  /**
  * @openapi
@@ -69,7 +76,12 @@ router.get('/:id', middleware.authMiddleware.bind(middleware), (req, res) => con
  *      '404':
  *        description: User not found.
  */
-router.put('/:id', middleware.authMiddleware.bind(middleware), (req, res) => controller.updateUser(req, res))
+router.put(
+  '/:id', 
+  checkAuthorization.checkAuthorization.bind(checkAuthorization),
+  checkOwner.checkOwner.bind(checkOwner), 
+  (req, res) => controller.updateUser(req, res)
+)
 
 /**
  * @openapi
@@ -92,7 +104,12 @@ router.put('/:id', middleware.authMiddleware.bind(middleware), (req, res) => con
  *       '404':
  *         description: User not found.
  */
-router.delete('/:id', middleware.authMiddleware.bind(middleware), (req, res) => controller.deleteUser(req, res))
+router.delete(
+  '/:id', 
+  checkAuthorization.checkAuthorization.bind(checkAuthorization),
+  checkOwner.checkOwner.bind(checkOwner), 
+  (req, res) => controller.deleteUser(req, res)
+)
 
 /**
  * @openapi
