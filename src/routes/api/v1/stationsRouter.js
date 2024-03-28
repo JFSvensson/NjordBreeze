@@ -2,12 +2,20 @@
  * @file Defines the local weather station data router for the application.
  * @module router
  * @author Fredrik Svensson
+ * @version 0.1.0
  * @since 0.1.0
  */
 
 import express from 'express'
+import { StationsController } from '../../../controllers/api/v1/stationsController.js'
+import { AuthMiddleware } from '../../../middleware/authMiddleware.js'
+import { CheckOwnerMiddleware } from '../../../middleware/checkOwnerMiddleware.js'
 
 export const router = express.Router()
+
+const controller = new StationsController()
+const checkAuthorization = new AuthMiddleware(controller)
+const checkOwner = new CheckOwnerMiddleware()
 
 /**
  * @openapi
@@ -27,9 +35,12 @@ export const router = express.Router()
  *              items:
  *                $ref: '#/components/schemas/WeatherStation'
  */
-router.get('/', (req, res) => {
-  res.send('Weather stations!') // TODO: Implement weather stations
-})
+router.get(
+  '/',
+  checkAuthorization.checkAuthorization.bind(checkAuthorization), 
+  checkOwner.checkOwner.bind(checkOwner),
+  (req, res) => controller.getStations(req, res)
+)
 
 /**
  * @openapi
@@ -51,8 +62,9 @@ router.get('/', (req, res) => {
  *      '401':
  *        description: Unauthorized.
  */
-router.post('/', (req, res) => {
-  res.send('Weather station registered!') // TODO: Implement weather station registration
+router.post(
+  '/', 
+  (req, res) => { res.send('Weather station registered!') // TODO: Implement weather station registration
 })
 
 /**
@@ -80,9 +92,12 @@ router.post('/', (req, res) => {
  *      '404':
  *        description: Weather station not found.
  */
-router.get('/:id', (req, res) => {
-  res.send('Weather station information') // TODO: Implement weather station information
-})
+router.get(
+  '/:id',
+  // checkAuthorization.checkAuthorization.bind(checkAuthorization), 
+  // checkOwner.checkOwner.bind(checkOwner),
+  (req, res) => controller.getStation(req, res)
+)
 
 /**
  * @openapi
