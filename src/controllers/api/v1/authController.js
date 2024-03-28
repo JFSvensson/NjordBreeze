@@ -7,10 +7,9 @@
  */
 
 import jwt from 'jsonwebtoken'
-import fs from 'fs'
 import createError from 'http-errors'
 import { AuthService } from '../../../services/api/v1/authService.js'
-import { TokenBlacklist } from '../../../services/api/v1/tokenBlackList.js'
+import { tokenBlacklist } from '../../../config/tokenBlacklist.js'
 
 /**
  * Handles requests regarding authorization.
@@ -18,10 +17,6 @@ import { TokenBlacklist } from '../../../services/api/v1/tokenBlackList.js'
 export class AuthController {
   constructor() {
     this.authService = new AuthService()
-    this.tokenBlacklist = new TokenBlacklist()
-    // WARNING! PRODUCTION CODE SHOULD NOT CONTAIN THIS LINE! TODO: REMOVE LINES BELOW!
-    process.env.ACCESS_TOKEN_SECRET = fs.readFileSync('./private.pem', 'utf8')
-    process.env.REFRESH_TOKEN_SECRET = fs.readFileSync('./private.pem', 'utf8')
   }
 
   /**
@@ -71,14 +66,14 @@ export class AuthController {
         email: user.email
       }
 
-      const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+      const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), {
         algorithm: 'RS256',
-        expiresIn: process.env.ACCESS_TOKEN_LIFE
+        expiresIn: Number(process.env.ACCESS_TOKEN_LIFE)
       })
 
-      const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+      const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET.replace(/\\n/g, '\n'), {
         algorithm: 'RS256',
-        expiresIn: process.env.REFRESH_TOKEN_LIFE
+        expiresIn: Number(process.env.REFRESH_TOKEN_LIFE)
       })
       res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
 
@@ -113,12 +108,17 @@ export class AuthController {
       return res.sendStatus(401)
     }
   
+    // Check if the refresh token is blacklisted
+    if (tokenBlacklist.isListed(refreshToken)) {
+      return res.sendStatus(403)
+    }
+
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
       if (err) {
         return res.sendStatus(403)
       }
 
-      const accessToken = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET, {
+      const accessToken = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), {
         algorithm: 'RS256',
         expiresIn: process.env.ACCESS_TOKEN_LIFE
       })
@@ -138,12 +138,12 @@ export class AuthController {
     if (authHeader) {
       // Extract the token from the Authorization header ("Bearer <token>"").
       const token = authHeader.split(' ')[1]
-      this.tokenBlacklist.add(token)
+      tokenBlacklist.add(token)
     }
     // Get refresh token from cookie and blacklist it.
     const refreshToken = req.cookies.refreshToken
     if (refreshToken) {
-      this.tokenBlacklist.add(refreshToken)
+      tokenBlacklist.add(refreshToken)
     }
 
     res
