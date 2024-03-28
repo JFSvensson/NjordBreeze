@@ -13,4 +13,9 @@ export class UsersService {
     const user = await User.findById(id)
     return user
   }
+
+  async updateUser(id, data) {
+    const user = await User.findByIdAndUpdate(id, data, { new: true, runValidators: true })
+    return user
+  }
 }
