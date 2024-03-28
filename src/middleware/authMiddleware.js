@@ -27,14 +27,9 @@ export class AuthMiddleware {
     }
 
     try {
-      // Verify the token
-      // jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
       jwt.verify(token, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), { algorithms: ['RS256'] })
-
-      // If the token is valid, call the next middleware function
       next()
     } catch (error) {
-      // If the token is not valid, send a 401 Unauthorized response
       res.status(401).json({ message: 'Unauthorized' })
     }
   }
