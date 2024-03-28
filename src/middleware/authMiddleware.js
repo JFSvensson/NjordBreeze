@@ -19,7 +19,7 @@ export class AuthMiddleware {
    * @returns {void}
    * @throws {Error} Throws an error if the token is blacklisted.
    */
-  authMiddleware(req, res, next) {
+  checkAuthorization(req, res, next) {
     // Extract the token from the Authorization header ("Bearer <token>"").
     const token = req.headers.authorization.split(' ')[1]
     if (tokenBlacklist.isListed(token)) {
@@ -27,7 +27,8 @@ export class AuthMiddleware {
     }
 
     try {
-      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), { algorithms: ['RS256'] })
+      const userData= jwt.verify(token, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), { algorithms: ['RS256'] })
+      req.user = userData // Add the user data to the request object for use in other middleware functions.
       next()
     } catch (error) {
       res.status(401).json({ message: 'Unauthorized' })
