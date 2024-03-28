@@ -12,7 +12,7 @@ import { AuthMiddleware } from '../../../middleware/authMiddleware.js'
 export const router = express.Router()
 
 const controller = new AuthController()
-const middleware = new AuthMiddleware(controller)
+const checkAuthorization = new AuthMiddleware(controller)
 
 /**
  * @openapi
@@ -69,7 +69,10 @@ router.post('/register', (req, res, next) => controller.register(req, res, next)
  *      '401':
  *        description: Unauthorized.
  */
-router.post('/login', (req, res, next) => controller.login(req, res, next))
+router.post(
+  '/login',
+  (req, res, next) => controller.login(req, res, next)
+)
 
 /**
  * @openapi
@@ -85,7 +88,11 @@ router.post('/login', (req, res, next) => controller.login(req, res, next))
  *      '401':
  *        description: Unauthorized.
  */
-router.post('/logout', middleware.authMiddleware.bind(middleware), (req, res) => controller.logout(req, res))
+router.post(
+  '/logout', 
+  checkAuthorization.checkAuthorization.bind(checkAuthorization), 
+  (req, res) => controller.logout(req, res)
+)
 
 /**
  * @openapi
@@ -101,7 +108,11 @@ router.post('/logout', middleware.authMiddleware.bind(middleware), (req, res) =>
  *       '401':
  *         description: Unauthorized.
  */
-router.get('/refresh', middleware.authMiddleware.bind(middleware), (req, res) => controller.refresh(req, res))
+router.get(
+  '/refresh', 
+  checkAuthorization.checkAuthorization.bind(checkAuthorization), 
+  (req, res) => controller.refresh(req, res)
+)
 
 /**
  * @openapi
