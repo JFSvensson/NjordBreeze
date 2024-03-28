@@ -69,7 +69,7 @@ router.get('/:id', middleware.authMiddleware.bind(middleware), (req, res) => con
  *      '404':
  *        description: User not found.
  */
-router.put('/:id', (req, res) => controller.updateUser(req, res))
+router.put('/:id', middleware.authMiddleware.bind(middleware), (req, res) => controller.updateUser(req, res))
 
 /**
  * @openapi
