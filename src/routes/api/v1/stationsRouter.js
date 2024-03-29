@@ -62,7 +62,7 @@ router.get(
  */
 router.post(
   '/',
-  // checkAuthorization.checkAuthorization.bind(checkAuthorization),
+  checkAuthorization.checkAuthorization.bind(checkAuthorization),
   (req, res) => controller.registerStation(req, res)
 )
 

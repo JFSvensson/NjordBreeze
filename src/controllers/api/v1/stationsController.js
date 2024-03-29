@@ -46,7 +46,11 @@ export class StationsController {
    */
   async registerStation(req, res) {
     try {
-      const station = await this.stationsService.registerStation(req.body)
+      const data = {
+        ...req.body,
+        owner: req.user.sub
+      }
+      const station = await this.stationsService.registerStation(data)
       if (!station) {
         return res.status(400).json({ message: 'Station not created' })
       }
