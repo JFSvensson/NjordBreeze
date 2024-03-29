@@ -61,9 +61,10 @@ router.get(
  *        description: Unauthorized.
  */
 router.post(
-  '/', 
-  (req, res) => { res.send('Weather station registered!') // TODO: Implement weather station registration
-})
+  '/',
+  // checkAuthorization.checkAuthorization.bind(checkAuthorization),
+  (req, res) => controller.registerStation(req, res)
+)
 
 /**
  * @openapi

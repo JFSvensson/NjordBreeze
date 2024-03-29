@@ -37,6 +37,26 @@ export class StationsController {
   }
 
   /**
+   * Register a new weather station.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @returns {void}
+   * @throws {Error} Throws an error if the weather station is not created.
+   * @throws {Error} Throws an error if an error occurs while creating the weather station.
+   */
+  async registerStation(req, res) {
+    try {
+      const station = await this.stationsService.registerStation(req.body)
+      if (!station) {
+        return res.status(400).json({ message: 'Station not created' })
+      }
+      res.status(201).json(station)
+    } catch (error) {
+      res.status(500).json({ message: 'An error occurred while creating the weather station' })
+    }
+  }
+
+  /**
    * Get a specific weather station.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.

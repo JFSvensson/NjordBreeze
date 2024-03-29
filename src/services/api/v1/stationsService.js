@@ -14,6 +14,12 @@ export class StationsService {
     return stations
   }
 
+  async registerStation(data) {
+    const station = new Station(data)
+    await station.save()
+    return station
+  }
+
   async getStation(id) {
     const station = await Station.findById(id)
     return station
