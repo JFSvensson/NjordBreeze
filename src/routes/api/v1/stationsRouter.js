@@ -92,8 +92,6 @@ router.post(
  */
 router.get(
   '/:id',
-  // checkAuthorization.checkAuthorization.bind(checkAuthorization), 
-  // checkOwner.checkOwner.bind(checkOwner),
   (req, res) => controller.getStation(req, res)
 )
 

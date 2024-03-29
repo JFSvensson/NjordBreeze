@@ -46,7 +46,6 @@ export class StationsController {
    */
   async getStation(req, res) {
     try {
-      console.log('getStation', req.params.id)
       const station = await this.stationsService.getStation(req.params.id)
       if (!station) {
         return res.status(404).json({ message: 'Station not found' })

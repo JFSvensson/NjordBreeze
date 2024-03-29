@@ -15,7 +15,6 @@ export class StationsService {
   }
 
   async getStation(id) {
-    console.log('getStation', id)
     const station = await Station.findById(id)
     return station
   }
