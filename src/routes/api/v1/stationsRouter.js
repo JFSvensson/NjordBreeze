@@ -37,8 +37,6 @@ const checkOwner = new CheckOwnerMiddleware()
  */
 router.get(
   '/',
-  checkAuthorization.checkAuthorization.bind(checkAuthorization), 
-  checkOwner.checkOwner.bind(checkOwner),
   (req, res) => controller.getStations(req, res)
 )
 

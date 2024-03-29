@@ -9,6 +9,11 @@
 import { Station } from '../../../models/station.js'
 
 export class StationsService {
+  async getStations() {
+    const stations = await Station.find()
+    return stations
+  }
+
   async getStation(id) {
     console.log('getStation', id)
     const station = await Station.findById(id)

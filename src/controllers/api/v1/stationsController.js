@@ -17,12 +17,32 @@ export class StationsController {
   }
 
   /**
+   * Get all weather station.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @returns {void}
+   * @throws {Error} Throws an error if no weather station is not found.
+   * @throws {Error} Throws an error if an error occurs while fetching the weather stations.
+   */
+  async getStations(req, res) {
+    try {
+      const station = await this.stationsService.getStations()
+      if (!station) {
+        return res.status(404).json({ message: 'No station found' })
+      }
+      res.json(station)
+    } catch (error) {
+      res.status(500).json({ message: 'An error occurred while fetching the weather stations' })
+    }
+  }
+
+  /**
    * Get a specific weather station.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.
    * @returns {void}
    * @throws {Error} Throws an error if the weather station is not found.
-   * @throws {Error} Throws an error if an error occurs while fetching the weather stations.
+   * @throws {Error} Throws an error if an error occurs while fetching the weather station.
    */
   async getStation(req, res) {
     try {
