@@ -169,20 +169,35 @@ router.delete(
  *          type: string
  *          format: uuid
  *          description: The unique identifier for the weather station.
- *        name:
+ *        stationname:
  *          type: string
  *          description: The name of the weather station.
- *        location:
+ *        description:
  *          type: string
- *          description: The location of the weather station.
+ *          description: A description of the weather station.
+ *        latitude:
+ *          type: number
+ *          description: The latitude of the weather station.
+ *        longitude:
+ *          type: number
+ *          description: The longitude of the weather station.
+ *        owner:
+ *          type: string
+ *          description: The owner of the weather station.
  *
  *    WeatherStationRegistration:
  *      type: object
  *      properties:
- *        name:
+  *        stationname:
  *          type: string
  *          description: The name of the weather station.
- *        location:
+ *        description:
  *          type: string
- *          description: The location of the weather station.
+ *          description: A description of the weather station.
+ *        latitude:
+ *          type: number
+ *          description: The latitude of the weather station.
+ *        longitude:
+ *          type: number
+ *          description: The longitude of the weather station.
  */
