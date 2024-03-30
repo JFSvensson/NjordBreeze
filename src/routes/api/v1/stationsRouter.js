@@ -151,9 +151,12 @@ router.put(
  *      '401':
  *        description: Unauthorized.
  */
-router.delete('/:id', (req, res) => {
-  res.send('Weather station deleted!') // TODO: Implement weather station deletion
-})
+router.delete(
+  '/:id', 
+  checkAuthorization.checkAuthorization.bind(checkAuthorization),
+  checkOwner.checkOwnerStation.bind(checkOwner),
+  (req, res) => controller.deleteStation(req, res)
+)
 
 /**
  * @openapi

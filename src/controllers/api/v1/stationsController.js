@@ -100,4 +100,24 @@ export class StationsController {
       res.status(500).json({ message: 'An error occurred while updating the weather station' })
     }
   }
+
+  /**
+   * Delete a specific weather station.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @returns {void}
+   * @throws {Error} Throws an error if the weather station is not deleted.
+   * @throws {Error} Throws an error if an error occurs while deleting the weather station.
+   */
+  async deleteStation(req, res) {
+    try {
+      const station = await this.stationsService.deleteStation(req.params.id)
+      if (!station) {
+        return res.status(400).json({ message: 'Station not deleted' })
+      }
+      res.json(station)
+    } catch (error) {
+      res.status(500).json({ message: 'An error occurred while deleting the weather station' })
+    }
+  }
 }

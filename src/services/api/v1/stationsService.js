@@ -29,4 +29,9 @@ export class StationsService {
     const station = await Station.findByIdAndUpdate(id, data, { new: true, runValidators: true })
     return station
   }
+
+  async deleteStation(id) {
+    const station = await Station.findByIdAndDelete(id)
+    return station
+  }
 }
