@@ -22,8 +22,13 @@ const schema = new mongoose.Schema({
     trim: true,
     minlength: 1
   },
-  location: {
-    type: String,
+  latitude: {
+    type: Number,
+    required: true,
+    minLength: 1
+  },
+  longitude: {
+    type: Number,
     required: true,
     minLength: 1
   },
