@@ -24,4 +24,9 @@ export class StationsService {
     const station = await Station.findById(id)
     return station
   }
+
+  async updateStation(id, data) {
+    const station = await Station.findByIdAndUpdate(id, data, { new: true, runValidators: true })
+    return station
+  }
 }

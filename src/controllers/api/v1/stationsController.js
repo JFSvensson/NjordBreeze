@@ -79,4 +79,25 @@ export class StationsController {
       res.status(500).json({ message: 'An error occurred while fetching the weather station' })
     }
   }
+
+  /**
+   * Update a specific weather station.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @returns {void}
+   * @throws {Error} Throws an error if the weather station is not updated.
+   * @throws {Error} Throws an error if an error occurs while updating the weather station.
+   */
+  async updateStation(req, res) {
+    try {
+      const data = req.body
+      const station = await this.stationsService.updateStation(req.params.id, data)
+      if (!station) {
+        return res.status(400).json({ message: 'Station not updated' })
+      }
+      res.json(station)
+    } catch (error) {
+      res.status(500).json({ message: 'An error occurred while updating the weather station' })
+    }
+  }
 }

@@ -123,9 +123,12 @@ router.get(
  *      '401':
  *        description: Unauthorized.
  */
-router.put('/:id', (req, res) => {
-  res.send('Weather station updated!') // TODO: Implement weather station update
-})
+router.put(
+  '/:id', 
+  checkAuthorization.checkAuthorization.bind(checkAuthorization),
+  checkOwner.checkOwnerStation.bind(checkOwner),
+  (req, res) => controller.updateStation(req, res)
+)
 
 /**
  * @openapi
