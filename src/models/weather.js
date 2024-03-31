@@ -16,10 +16,14 @@ const schema = new mongoose.Schema({
   windspeed: {
     type: Number,
   },
-  station: {
+  stationname: {
     type: String,
     required: true
-  }
+  },
+  stationid: {
+    type: String,
+    required: true
+  },
 }, {
   timestamps: true,
   toJSON: {
