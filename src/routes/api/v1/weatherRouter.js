@@ -16,9 +16,40 @@ const controller = new WeatherController()
 const checkAuthorization = new AuthMiddleware(controller)
 const checkOwner = new CheckOwnerMiddleware()
 
+
 /**
  * @openapi
- * /weather/current:
+ * /weather/{id}:
+ *  get:
+ *    summary: Get all weather data.
+ *    description: Returns all weather data from a specific station.
+ *    tags:
+ *      - Weather Data
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true  
+ *        schema:
+ *          type: string
+ *        description: The weather station's ID.
+ *    responses:
+ *      '200':
+ *        description: A list of weather data.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/WeatherData'
+ *      '404':
+ *        description: Weather data not found.
+ */
+router.get(
+  '/:id',
+  (req, res) => controller.getAllWeatherData(req, res)
+)
+
+/**
+ * @openapi
+ * /weather/current/{id}:
  *   get:
  *     summary: Get current weather conditions.
  *     description: Returns current weather conditions, being the data most recently added, for a specified location.
