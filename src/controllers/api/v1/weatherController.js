@@ -24,9 +24,9 @@ export class WeatherController {
    * @throws {Error} Throws an error if no weather data is found.
    * @throws {Error} Throws an error if an error occurs while fetching the weather data.
    */
-  async getCurrentWeather(req, res) {
+  async getCurrentWeatherData(req, res) {
     try {
-      const weather = await this.weatherService.getCurrentWeather(req.params.id)
+      const weather = await this.weatherService.getCurrentWeatherData(req.params.id)
       if (!weather) {
         return res.status(404).json({ message: 'No weather data found' })
       }

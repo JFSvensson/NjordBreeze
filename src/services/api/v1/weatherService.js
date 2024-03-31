@@ -9,7 +9,7 @@
 import { Weather } from '../../../models/weather.js'
 
 export class WeatherService {
-  async getCurrentWeather(id) {
+  async getCurrentWeatherData(id) {
     const weather = await Weather.find({ stationid: id })
     .sort({ createdAt: -1 })
     .limit(1)

@@ -26,11 +26,11 @@ const checkOwner = new CheckOwnerMiddleware()
  *       - Weather Data
  *     parameters:
  *       - in: query
- *         name: location
+ *         name: stationid
  *         schema:
  *           type: string
  *         required: true
- *         description: The location to fetch current weather conditions for.
+ *         description: The id for the weather station to fetch current weather conditions for.
  *     responses:
  *       '200':
  *         description: Successful response with current weather conditions.
@@ -43,7 +43,7 @@ const checkOwner = new CheckOwnerMiddleware()
  */
 router.get(
   '/current/:id',
-  (req, res) => controller.getCurrentWeather(req, res)
+  (req, res) => controller.getCurrentWeatherData(req, res)
 )
 
 /**
@@ -61,7 +61,7 @@ router.get(
  *      type: number
  *      format: float
  *      description: Wind speed in m/s.
- *     station:
+ *     stationname:
  *      type: string
- *      description: The weather station providing the data.
+ *      description: The name of the weather station providing the data.
  */
