@@ -10,11 +10,9 @@ import { Weather } from '../../../models/weather.js'
 
 export class WeatherService {
   async getCurrentWeather(id) {
-    console.log(id)
-    const weather = await Weather.find({ station: id })
-    .sort({ date: -1 })
+    const weather = await Weather.find({ stationid: id })
+    .sort({ createdAt: -1 })
     .limit(1)
-    console.log(weather)
   return weather[0]
   }
 }
