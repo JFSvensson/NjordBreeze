@@ -15,8 +15,7 @@ export class StationsService {
   }
 
   async registerStation(data) {
-    const station = new Station(data)
-    await station.save()
+    const station = await Station.create(data)
     return station
   }
 

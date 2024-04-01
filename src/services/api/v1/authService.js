@@ -10,8 +10,7 @@ import { User } from '../../../models/user.js'
 
 export class AuthService {
   async createUser(userData) {
-    const user = new User(userData)
-    await user.save()
+    const user = await User.create(userData)
     return user
   }
 
