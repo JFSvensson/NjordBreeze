@@ -16,10 +16,6 @@ const schema = new mongoose.Schema({
   windspeed: {
     type: Number,
   },
-  stationname: {
-    type: String,
-    required: true
-  },
   stationid: {
     type: String,
     required: true
