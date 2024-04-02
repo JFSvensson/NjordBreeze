@@ -9,6 +9,10 @@
 import mongoose from 'mongoose'
 
 const schema = new mongoose.Schema({
+  date: {
+    type: Date,
+    required: true,
+  },
   temperature: {
     type: Number,
     trim: true,
