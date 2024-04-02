@@ -117,6 +117,40 @@ router.put(
 
 /**
  * @openapi
+ * /weather/{id}:
+ *  delete:
+ *    summary: Delete weather data.
+ *    description: Delete a specific dataset. User needs to be authenticated and the owner of the station to add data.
+ *    tags:
+ *      - Weather Data
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true  
+ *        schema:
+ *          type: string
+ *        description: The weather data's ID.
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/WeatherData'
+ *    responses:
+ *      '201':
+ *        description: Weather data updated successfully.
+ *      '401':
+ *        description: Unauthorized.
+ */
+router.delete(
+  '/:id',
+  checkAuthorization.checkAuthorization.bind(checkAuthorization),
+  checkOwner.checkOwnerWeatherData.bind(checkOwner),
+  (req, res) => controller.deleteWeatherData(req, res)
+)
+
+/**
+ * @openapi
  * /weather/current/{id}:
  *   get:
  *     summary: Get current weather conditions.

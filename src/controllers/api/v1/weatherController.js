@@ -61,6 +61,26 @@ export class WeatherController {
   }
 
   /**
+   * Delete weather data for a specific location.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @returns {void}
+   * @throws {Error} Throws an error if the weather data is not deleted.
+   * @throws {Error} Throws an error if an error occurs while deleting the weather data.
+   */
+  async deleteWeatherData(req, res) {
+    try {
+      const weather = await this.weatherService.deleteWeatherData(req.params.id)
+      if (!weather) {
+        return res.status(400).json({ message: 'Weather data not deleted' })
+      }
+      res.json(weather)
+    } catch (error) {
+      res.status(500).json({ message: 'An error occurred while deleting the weather data' })
+    }
+  }
+
+  /**
    * Get current weather data for a specific location.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.

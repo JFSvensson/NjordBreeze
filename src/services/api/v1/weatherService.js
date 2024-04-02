@@ -20,6 +20,11 @@ export class WeatherService {
     return weather
   }
 
+  async deleteWeatherData(id) {
+    const weather = await Weather.findByIdAndDelete(id)
+    return weather
+  }
+
   async getCurrentWeatherData(id) {
     const weather = await Weather.find({ stationid: id })
     .sort({ createdAt: -1 })
