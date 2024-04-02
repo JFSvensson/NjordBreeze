@@ -17,6 +17,26 @@ export class WeatherController {
   }
 
   /**
+   * Get all weather data from a specific station.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @returns {void}
+   * @throws {Error} Throws an error if no weather data is found.
+   * @throws {Error} Throws an error if an error occurs while fetching the weather data.
+   */
+  async getAllWeatherData(req, res) {
+    try {
+      const weather = await this.weatherService.getAllWeatherData(req.params.id)
+      if (!weather) {
+        return res.status(404).json({ message: 'No weather data found' })
+      }
+      res.json(weather)
+    } catch (error) {
+      res.status(500).json({ message: 'An error occurred while fetching the weather data' })
+    }
+  }
+
+  /**
    * Get a specific set of weather data.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.

@@ -9,6 +9,10 @@
 import { Weather } from '../../../models/weather.js'
 
 export class WeatherService {
+  async getAllWeatherData(id) {
+    const weather = await Weather.find({ stationid: id })
+    return weather
+  }
 
   async getWeatherData(id) {
     const weather = await Weather.findById(id)
