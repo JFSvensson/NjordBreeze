@@ -65,6 +65,7 @@ async function populateDB() {
         const weather = new Weather({
           temperature: faker.number.int({ min: -20, max: 40 }),
           windspeed: faker.number.int({ min: 0, max: 40 }),
+          winddirection: faker.number.int({ min: 0, max: 360 }),
           stationid: station.id,
         })
 
