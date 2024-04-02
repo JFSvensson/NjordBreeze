@@ -13,16 +13,15 @@ export class CheckOwnerMiddleware {
 
   /**
    * Middleware to check if the request is authorized.
+   * If the user is not the owner of the requested resource, a 403 Forbidden response is sent.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.
    * @param {NextFunction} next - The next middleware function.
    * @returns {void}
-   * @throws {Error} Throws an error if the user is not the owner of the resource.
    */
   async checkOwner(req, res, next) {
-    const userIdFromToken = req.user.sub
-    const userIdFromParams = req.params.id
-    if (userIdFromToken !== userIdFromParams) {
+    const isOwner = this.isOwner(req.user.sub, req.params.id)
+    if (!isOwner) {
       return res.status(403).json({ message: 'Forbidden: You can only access your own data' })
     }
     next()
@@ -30,17 +29,16 @@ export class CheckOwnerMiddleware {
 
   /**
    * Middleware to check if the request is authorized to modify a station.
+   * If the user is not the owner of the requested station, a 403 Forbidden response is sent.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.
    * @param {NextFunction} next - The next middleware function.
    * @returns {void}
-   * @throws {Error} Throws an error if the user is not the owner of the station.
    */
   async checkOwnerStation(req, res, next) {
-    const userIdFromToken = req.user.sub
-    const stationId = req.params.id
-    const station = await Station.findById(stationId)
-    if (!station || userIdFromToken.toString() !== station.owner.toString()) {
+    const station = await Station.findById(req.params.id)
+    const isOwner = this.isOwner(req.user.sub, station.owner)
+    if (!isOwner) {
       return res.status(403).json({ message: 'Forbidden: You can only modify your own station' })
     }
     next()
@@ -48,21 +46,23 @@ export class CheckOwnerMiddleware {
 
   /**
    * Middleware to check if the request is authorized to modify a station.
+   * If the user is not the owner of the requested weather data, a 403 Forbidden response is sent.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.
    * @param {NextFunction} next - The next middleware function.
    * @returns {void}
-   * @throws {Error} Throws an error if the user is not the owner of the station.
    */
   async checkOwnerWeatherData(req, res, next) {
-    const userIdFromToken = req.user.sub
-    const weatherDataId = req.params.id
-    const weatherData = await Weather.findById(weatherDataId)
-    const stationId = weatherData.stationid
-    const station = await Station.findById(stationId)
-    if (!station || userIdFromToken.toString() !== station.owner.toString()) {
+    const weatherData = await Weather.findById(req.params.id)
+    const station = await Station.findById(weatherData.stationid)
+    const isOwner = this.isOwner(req.user.sub, station.owner)
+    if (!isOwner) {
       return res.status(403).json({ message: 'Forbidden: You can only modify data for your own station' })
     }
     next()
+  }
+
+  isOwner(userIdFromToken, userIdFromResource) {
+    return userIdFromToken.toString() === userIdFromResource.toString()
   }
 }
