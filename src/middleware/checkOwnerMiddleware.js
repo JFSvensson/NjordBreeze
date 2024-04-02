@@ -7,6 +7,7 @@
  */
 
 import { Station } from '../models/station.js'
+import { Weather } from '../models/weather.js'
 
 export class CheckOwnerMiddleware {
 
@@ -41,6 +42,26 @@ export class CheckOwnerMiddleware {
     const station = await Station.findById(stationId)
     if (!station || userIdFromToken.toString() !== station.owner.toString()) {
       return res.status(403).json({ message: 'Forbidden: You can only modify your own station' })
+    }
+    next()
+  }
+
+  /**
+   * Middleware to check if the request is authorized to modify a station.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @param {NextFunction} next - The next middleware function.
+   * @returns {void}
+   * @throws {Error} Throws an error if the user is not the owner of the station.
+   */
+  async checkOwnerWeatherData(req, res, next) {
+    const userIdFromToken = req.user.sub
+    const weatherDataId = req.params.id
+    const weatherData = await Weather.findById(weatherDataId)
+    const stationId = weatherData.stationid
+    const station = await Station.findById(stationId)
+    if (!station || userIdFromToken.toString() !== station.owner.toString()) {
+      return res.status(403).json({ message: 'Forbidden: You can only modify data for your own station' })
     }
     next()
   }
