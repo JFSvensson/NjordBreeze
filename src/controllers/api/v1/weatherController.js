@@ -17,6 +17,31 @@ export class WeatherController {
   }
 
   /**
+     * Add weather data for a specific location.
+     * @param {Request} req - The request object.
+     * @param {Response} res - The response object.
+     * @returns {void}
+     * @throws {Error} Throws an error if the weather data is not added.
+     * @throws {Error} Throws an error if an error occurs while adding the weather data.
+     */
+  async addWeatherData(req, res) {
+    try {
+      const data = {
+        ...req.body,
+        stationid: req.params.id
+      }
+      const weather = await this.weatherService.addWeatherData(data)
+      if (!weather) {
+        return res.status(400).json({ message: 'Weather data not added' })
+      }
+      res.status(201).json(weather)
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ message: 'An error occurred while adding the weather data' })
+    }
+  }
+
+  /**
    * Get current weather data for a specific location.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.
