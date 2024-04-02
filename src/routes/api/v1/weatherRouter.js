@@ -21,7 +21,7 @@ const checkOwner = new CheckOwnerMiddleware()
  * @openapi
  * /weather/{id}:
  *  get:
- *    summary: Get all weather data.
+ *    summary: Get all weather data from a specific station.
  *    description: Returns all weather data from a specific station.
  *    tags:
  *      - Weather Data
@@ -45,6 +45,33 @@ const checkOwner = new CheckOwnerMiddleware()
 router.get(
   '/:id',
   (req, res) => controller.getAllWeatherData(req, res)
+)
+
+/**
+ * @openapi
+ * /weather/{id}:
+ *  post:
+ *    summary: Add new weather data to a station
+ *    description: Adds new weather data (temperature and wind speed) to a specific weather station in the system. User needs to be authenticated and the owner of the station to add data.
+ *    tags:
+ *      - Weather Data
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/WeatherData'
+ *    responses:
+ *      '201':
+ *        description: Weather data added successfully.
+ *      '401':
+ *        description: Unauthorized.
+ */
+router.post(
+  '/:id',
+  checkAuthorization.checkAuthorization.bind(checkAuthorization),
+  checkOwner.checkOwnerStation.bind(checkOwner),
+  (req, res) => controller.addWeatherData(req, res)
 )
 
 /**
@@ -92,7 +119,11 @@ router.get(
  *      type: number
  *      format: float
  *      description: Wind speed in m/s.
- *     stationname:
+ *     windDirection:
+ *      type: number
+ *      format: float
+ *      description: Wind direction in degrees. 360 degrees is north, 90 degrees is east, 180 degrees is south, and 270 degrees is west. 0 degrees is calm.
+ *     stationid:
  *      type: string
- *      description: The name of the weather station providing the data.
+ *      description: Unique identifier for the station.
  */
