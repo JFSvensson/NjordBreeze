@@ -15,6 +15,11 @@ export class WeatherService {
     return weather
   }
 
+  async updateWeatherData(id, data) {
+    const weather = await Weather.findByIdAndUpdate(id, data, { new: true, runValidators: true })
+    return weather
+  }
+
   async getCurrentWeatherData(id) {
     const weather = await Weather.find({ stationid: id })
     .sort({ createdAt: -1 })

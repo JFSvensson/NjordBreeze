@@ -52,9 +52,16 @@ router.get(
  * /weather/{id}:
  *  post:
  *    summary: Add new weather data to a station
- *    description: Adds new weather data (temperature and wind speed) to a specific weather station in the system. User needs to be authenticated and the owner of the station to add data.
+ *    description: Adds new weather data (temperature, windspeed and winddirection) to a specific weather station in the system. User needs to be authenticated and the owner of the station to add data.
  *    tags:
  *      - Weather Data
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true  
+ *        schema:
+ *          type: string
+ *        description: The weather station's ID.
  *    requestBody:
  *      required: true
  *      content:
@@ -72,6 +79,40 @@ router.post(
   checkAuthorization.checkAuthorization.bind(checkAuthorization),
   checkOwner.checkOwnerStation.bind(checkOwner),
   (req, res) => controller.addWeatherData(req, res)
+)
+
+/**
+ * @openapi
+ * /weather/{id}:
+ *  put:
+ *    summary: Update weather data.
+ *    description: Update weather data (temperature, windspeed and winddirection) for a specific dataset. User needs to be authenticated and the owner of the station to add data.
+ *    tags:
+ *      - Weather Data
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true  
+ *        schema:
+ *          type: string
+ *        description: The weather data's ID.
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/WeatherData'
+ *    responses:
+ *      '201':
+ *        description: Weather data updated successfully.
+ *      '401':
+ *        description: Unauthorized.
+ */
+router.put(
+  '/:id',
+  checkAuthorization.checkAuthorization.bind(checkAuthorization),
+  checkOwner.checkOwnerWeatherData.bind(checkOwner),
+  (req, res) => controller.updateWeatherData(req, res)
 )
 
 /**
