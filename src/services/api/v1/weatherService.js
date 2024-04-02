@@ -10,6 +10,11 @@ import { Weather } from '../../../models/weather.js'
 
 export class WeatherService {
 
+  async getWeatherData(id) {
+    const weather = await Weather.findById(id)
+    return weather
+  }
+
   async addWeatherData(data) {
     const weather = await Weather.create(data)
     return weather

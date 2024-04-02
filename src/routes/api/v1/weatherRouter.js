@@ -44,7 +44,7 @@ const checkOwner = new CheckOwnerMiddleware()
  */
 router.get(
   '/:id',
-  (req, res) => controller.getAllWeatherData(req, res)
+  (req, res) => controller.getWeatherData(req, res)
 )
 
 /**
