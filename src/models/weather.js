@@ -16,6 +16,9 @@ const schema = new mongoose.Schema({
   windspeed: {
     type: Number,
   },
+  winddirection: {
+    type: Number,
+  },
   stationid: {
     type: String,
     required: true
