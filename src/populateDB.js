@@ -63,6 +63,7 @@ async function populateDB() {
       const measurementCount = Math.floor(Math.random() * 10) + 1
       for (let k = 0; k < measurementCount; k++) {
         const weather = new Weather({
+          date: faker.date.recent(),
           temperature: faker.number.int({ min: -20, max: 40 }),
           windspeed: faker.number.int({ min: 0, max: 40 }),
           winddirection: faker.number.int({ min: 0, max: 360 }),
