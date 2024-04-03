@@ -97,18 +97,24 @@ router.post(
 /**
  * @openapi
  * /auth/refresh:
- *   get:
+ *   post:
  *     summary: Refresh access token
  *     description: Refreshes the access token for the user.
  *     tags:
  *       - Authorization
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/RefreshToken'
  *     responses:
  *       '200':
  *         description: Access token refreshed successfully.
  *       '401':
  *         description: Unauthorized.
  */
-router.get(
+router.post(
   '/refresh', 
   checkAuthorization.checkAuthorization.bind(checkAuthorization), 
   (req, res) => controller.refresh(req, res)
@@ -117,15 +123,21 @@ router.get(
 /**
  * @openapi
  * components:
- *   schemas:
- *     NewUser:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *           description: The user's full name.
- *         email:
- *           type: string
- *           format: email
- *           description: The user's email address.
+ *  schemas:
+ *   NewUser:
+ *    type: object
+ *    properties:
+ *     name:
+ *      type: string
+ *      description: The user's full name.
+ *     email:
+ *      type: string
+ *      format: email
+ *      description: The user's email address.
+ *   RefreshToken:
+ *    type: object
+ *    properties:
+ *     refreshToken:
+ *      type: string
+ *      description: The refresh token for the user.
  */
