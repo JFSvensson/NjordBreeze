@@ -7,6 +7,7 @@
  */
 
 import { WeatherService } from '../../../services/api/v1/weatherService.js'
+import { WebhookService } from '../../../services/api/v1/webhooksService.js'
 
 /**
  * Handles requests for weather data.
@@ -14,6 +15,7 @@ import { WeatherService } from '../../../services/api/v1/weatherService.js'
 export class WeatherController {
   constructor() {
     this.weatherService = new WeatherService()
+    this.webhookService = new WebhookService()
   }
 
   /**
@@ -74,6 +76,7 @@ export class WeatherController {
       if (!weather) {
         return res.status(400).json({ message: 'Weather data not added' })
       }
+      this.webhookService.notifyWebhooks(data)
       res.status(201).json(weather)
     } catch (error) {
       res.status(500).json({ message: 'An error occurred while adding the weather data' })
