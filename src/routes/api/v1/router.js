@@ -11,6 +11,7 @@ import { router as authRouter } from './authRouter.js'
 import { router as weatherRouter } from './weatherRouter.js'
 import { router as stationsRouter } from './stationsRouter.js'
 import { router as usersRouter } from './usersRouter.js'
+import { router as webhooksRouter } from './webhooksRouter.js'
 
 export const router = express.Router()
 
@@ -49,3 +50,4 @@ router.use('/auth', authRouter)
 router.use('/weather', weatherRouter)
 router.use('/stations', stationsRouter)
 router.use('/users', usersRouter)
+router.use('/webhooks', webhooksRouter)
