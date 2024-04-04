@@ -62,41 +62,10 @@ try {
   // Add HATEOAS links to all responses.
   app.use(HateoasMiddleware.addLinks)
 
-  // // Middleware to be executed before the routes.
-  // app.use((req, res, next) => {
-  //   // Add a request UUID to each request and store information about
-  //   // each request in the request-scoped context.
-  //   // req.requestUuid = randomUUID()
-  //   httpContext.set('request', req)
-
-  //   next()
-  // })
-
-  // // Session middleware.
-  // const sessionMiddleware = {
-  //   name: process.env.SESSION_NAME,
-  //   secret: process.env.SESSION_SECRET,
-  //   resave: false,
-  //   saveUninitialized: false,
-  //   cookie: {
-  //     maxAge: 1000 * 60 * 60 * 24, // 24 hours
-  //     sameSite: 'strict'
-  //   }
-  // }
-
-  // // Production settings.
-  // if (app.get('env') === 'production') {
-  //   app.set('trust proxy', 1) // Running behind reverse proxy, trust first proxy
-  //   sessionMiddleware.cookie.secure = true // Only serve secure cookies, https
-  // }
-
-  // app.use(session(sessionMiddleware))
-
-  // // Middleware for passing the base URL to the views.
-  // app.use((req, res, next) => {
-  //   res.locals.baseURL = baseURL
-  //   next()
-  // })
+  // Production settings.
+  if (app.get('env') === 'production') {
+    app.set('trust proxy', 1) // Running behind reverse proxy, trust first proxy
+  }
 
   // Register routes.
   app.use('/', router)
