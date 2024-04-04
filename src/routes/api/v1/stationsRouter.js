@@ -10,12 +10,14 @@ import express from 'express'
 import { StationsController } from '../../../controllers/api/v1/stationsController.js'
 import { AuthMiddleware } from '../../../middleware/authMiddleware.js'
 import { CheckOwnerMiddleware } from '../../../middleware/checkOwnerMiddleware.js'
+import { HateoasMiddleware } from '../../../middleware/hateoasMiddleware.js'
 
 export const router = express.Router()
 
 const controller = new StationsController()
 const checkAuthorization = new AuthMiddleware(controller)
 const checkOwner = new CheckOwnerMiddleware()
+const hateoas = new HateoasMiddleware()
 
 /**
  * @openapi
@@ -37,6 +39,7 @@ const checkOwner = new CheckOwnerMiddleware()
  */
 router.get(
   '/',
+  hateoas.addLinks,
   (req, res) => controller.getStations(req, res)
 )
 
@@ -63,6 +66,7 @@ router.get(
 router.post(
   '/',
   checkAuthorization.checkAuthorization.bind(checkAuthorization),
+  hateoas.addLinks,
   (req, res) => controller.registerStation(req, res)
 )
 
@@ -93,6 +97,7 @@ router.post(
  */
 router.get(
   '/:id',
+  hateoas.addLinks,
   (req, res) => controller.getStation(req, res)
 )
 
@@ -127,6 +132,7 @@ router.put(
   '/:id', 
   checkAuthorization.checkAuthorization.bind(checkAuthorization),
   checkOwner.checkOwnerStation.bind(checkOwner),
+  hateoas.addLinks,
   (req, res) => controller.updateStation(req, res)
 )
 
@@ -155,6 +161,7 @@ router.delete(
   '/:id', 
   checkAuthorization.checkAuthorization.bind(checkAuthorization),
   checkOwner.checkOwnerStation.bind(checkOwner),
+  hateoas.addLinks,
   (req, res) => controller.deleteStation(req, res)
 )
 
