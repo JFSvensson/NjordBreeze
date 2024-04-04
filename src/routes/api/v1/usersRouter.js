@@ -10,12 +10,14 @@ import express from 'express'
 import { UsersController } from '../../../controllers/api/v1/usersController.js'
 import { AuthMiddleware } from '../../../middleware/authMiddleware.js'
 import { CheckOwnerMiddleware } from '../../../middleware/checkOwnerMiddleware.js'
+import { HateoasMiddleware } from '../../../middleware/hateoasMiddleware.js'
 
 export const router = express.Router()
 
 const controller = new UsersController()
 const checkAuthorization = new AuthMiddleware(controller)
 const checkOwner = new CheckOwnerMiddleware()
+const hateoas = new HateoasMiddleware()
 
 /**
  * @openapi
@@ -45,7 +47,8 @@ const checkOwner = new CheckOwnerMiddleware()
 router.get(
   '/:id', 
   checkAuthorization.checkAuthorization.bind(checkAuthorization), 
-  checkOwner.checkOwner.bind(checkOwner), 
+  checkOwner.checkOwner.bind(checkOwner),
+  hateoas.addLinks,
   (req, res) => controller.getUser(req, res)
 )
 
@@ -79,7 +82,8 @@ router.get(
 router.put(
   '/:id', 
   checkAuthorization.checkAuthorization.bind(checkAuthorization),
-  checkOwner.checkOwner.bind(checkOwner), 
+  checkOwner.checkOwner.bind(checkOwner),
+  hateoas.addLinks,
   (req, res) => controller.updateUser(req, res)
 )
 
@@ -107,7 +111,8 @@ router.put(
 router.delete(
   '/:id', 
   checkAuthorization.checkAuthorization.bind(checkAuthorization),
-  checkOwner.checkOwner.bind(checkOwner), 
+  checkOwner.checkOwner.bind(checkOwner),
+  hateoas.addLinks,
   (req, res) => controller.deleteUser(req, res)
 )
 
