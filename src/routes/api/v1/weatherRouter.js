@@ -9,12 +9,14 @@ import express from 'express'
 import { WeatherController } from '../../../controllers/api/v1/weatherController.js'
 import { AuthMiddleware } from '../../../middleware/authMiddleware.js'
 import { CheckOwnerMiddleware } from '../../../middleware/checkOwnerMiddleware.js'
+import { HateoasMiddleware } from '../../../middleware/hateoasMiddleware.js'
 
 export const router = express.Router()
 
 const controller = new WeatherController()
 const checkAuthorization = new AuthMiddleware(controller)
 const checkOwner = new CheckOwnerMiddleware()
+const hateoas = new HateoasMiddleware()
 
 /**
  * @openapi
@@ -43,6 +45,7 @@ const checkOwner = new CheckOwnerMiddleware()
  */
 router.get(
   '/stations/:id',
+  hateoas.addLinks,
   (req, res) => controller.getAllWeatherData(req, res)
 )
 
@@ -73,6 +76,7 @@ router.get(
  */
 router.get(
   '/:id',
+  hateoas.addLinks,
   (req, res) => controller.getWeatherData(req, res)
 )
 
@@ -107,6 +111,7 @@ router.post(
   '/:id',
   checkAuthorization.checkAuthorization.bind(checkAuthorization),
   checkOwner.checkOwnerStation.bind(checkOwner),
+  hateoas.addLinks,
   (req, res) => controller.addWeatherData(req, res)
 )
 
@@ -141,6 +146,7 @@ router.put(
   '/:id',
   checkAuthorization.checkAuthorization.bind(checkAuthorization),
   checkOwner.checkOwnerWeatherData.bind(checkOwner),
+  hateoas.addLinks,
   (req, res) => controller.updateWeatherData(req, res)
 )
 
@@ -175,6 +181,7 @@ router.delete(
   '/:id',
   checkAuthorization.checkAuthorization.bind(checkAuthorization),
   checkOwner.checkOwnerWeatherData.bind(checkOwner),
+  hateoas.addLinks,
   (req, res) => controller.deleteWeatherData(req, res)
 )
 
@@ -205,6 +212,7 @@ router.delete(
  */
 router.get(
   '/current/:id',
+  hateoas.addLinks,
   (req, res) => controller.getCurrentWeatherData(req, res)
 )
 
