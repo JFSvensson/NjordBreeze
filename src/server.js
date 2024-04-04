@@ -17,6 +17,7 @@ import logger from 'morgan'
 import cookieParser from 'cookie-parser'
 import swaggerUi from 'swagger-ui-express'
 import openapiSpecification from './openapiDef.js'
+import { HateoasMiddleware } from './middleware/hateoasMiddleware.js'
 import { router } from './routes/router.js'
 
 try {
@@ -57,6 +58,9 @@ try {
 
   // Use the cookie-parser middleware
   app.use(cookieParser())
+
+  // Add HATEOAS links to all responses.
+  app.use(HateoasMiddleware.addLinks)
 
   // // Middleware to be executed before the routes.
   // app.use((req, res, next) => {
