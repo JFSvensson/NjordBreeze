@@ -59,9 +59,6 @@ try {
   // Use the cookie-parser middleware
   app.use(cookieParser())
 
-  // Add HATEOAS links to all responses.
-  app.use(HateoasMiddleware.addLinks)
-
   // Production settings.
   if (app.get('env') === 'production') {
     app.set('trust proxy', 1) // Running behind reverse proxy, trust first proxy
