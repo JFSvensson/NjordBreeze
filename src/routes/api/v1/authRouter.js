@@ -8,11 +8,13 @@
 import express from 'express'
 import { AuthController } from '../../../controllers/api/v1/authController.js'
 import { AuthMiddleware } from '../../../middleware/authMiddleware.js'
+import { HateoasMiddleware } from '../../../middleware/hateoasMiddleware.js'
 
 export const router = express.Router()
 
 const controller = new AuthController()
 const checkAuthorization = new AuthMiddleware(controller)
+const hateoas = new HateoasMiddleware()
 
 /**
  * @openapi
@@ -32,7 +34,11 @@ const checkAuthorization = new AuthMiddleware(controller)
  *      '201':
  *        description: User created successfully.
  */
-router.post('/register', (req, res, next) => controller.register(req, res, next))
+router.post(
+  '/register',
+  hateoas.addLinks,
+  (req, res, next) => controller.register(req, res, next)
+)
 
 /**
  * @openapi
@@ -71,6 +77,7 @@ router.post('/register', (req, res, next) => controller.register(req, res, next)
  */
 router.post(
   '/login',
+  hateoas.addLinks,
   (req, res, next) => controller.login(req, res, next)
 )
 
@@ -89,8 +96,9 @@ router.post(
  *        description: Unauthorized.
  */
 router.post(
-  '/logout', 
-  checkAuthorization.checkAuthorization.bind(checkAuthorization), 
+  '/logout',
+  hateoas.addLinks,
+  checkAuthorization.checkAuthorization.bind(checkAuthorization),
   (req, res) => controller.logout(req, res)
 )
 
@@ -115,7 +123,8 @@ router.post(
  *         description: Unauthorized.
  */
 router.post(
-  '/refresh', 
+  '/refresh',
+  hateoas.addLinks,
   checkAuthorization.checkAuthorization.bind(checkAuthorization), 
   (req, res) => controller.refresh(req, res)
 )
