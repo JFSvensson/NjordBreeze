@@ -8,10 +8,12 @@
 
 import express from 'express'
 import { WebhookController } from '../../../controllers/api/v1/webhooksController.js'
+import { HateoasMiddleware } from '../../../middleware/hateoasMiddleware.js'
 
 export const router = express.Router()
 
 const controller = new WebhookController()
+const hateoas = new HateoasMiddleware()
 
 /**
  * @openapi
@@ -35,6 +37,7 @@ const controller = new WebhookController()
  */
 router.post(
   '/register',
+  hateoas.addLinks,
   (req, res) => controller.registerWebhook(req, res)
 )
 
@@ -61,6 +64,7 @@ router.post(
  */
 router.delete(
   '/remove/:id',
+  hateoas.addLinks,
   (req, res) => controller.removeWebhook(req, res)
 )
 
