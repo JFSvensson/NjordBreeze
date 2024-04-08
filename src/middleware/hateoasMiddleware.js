@@ -17,8 +17,6 @@ export class HateoasMiddleware {
    */
   addLinks(req, res, next) {
     // Define links that should be included in all responses.
-    console.log(req.user)
-    console.log('id', req.params.id)
     const basicLinks = {
       self: {
         href: req.originalUrl,
