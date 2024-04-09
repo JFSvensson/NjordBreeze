@@ -7,6 +7,9 @@
  */
 
 import mongoose from 'mongoose'
+import validator from 'validator'
+
+const { isLatLong } = validator
 
 const schema = new mongoose.Schema({
   stationname: {
@@ -25,12 +28,12 @@ const schema = new mongoose.Schema({
   latitude: {
     type: Number,
     required: true,
-    minLength: 1
+    validate: [isLatLong, 'Please provide a valid latitude.']
   },
   longitude: {
     type: Number,
     required: true,
-    minLength: 1
+    validate: [isLatLong, 'Please provide a valid longitude.']
   },
   owner: {
     type: String,
