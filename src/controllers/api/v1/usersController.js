@@ -46,13 +46,12 @@ export class UsersController {
    */
   async updateUser(req, res) {
     try {
-      const user = await this.usersService.updateUser(req.params.id, req.body)
-      if (!user) {
+      const response = await this.usersService.updateUser(req.params.id, req.body)
+      if (!response.user) {
         return res.status(404).json({ message: 'User not found' })
       }
-      res.json(user)
+      res.json(response)
     } catch (error) {
-      console.log(error)
       res.status(500).json({ message: 'An error occurred while updating the user' })
     }
   }
@@ -67,11 +66,11 @@ export class UsersController {
    */
   async deleteUser(req, res) {
     try {
-      const user = await this.usersService.deleteUser(req.params.id)
-      if (!user) {
+      const response = await this.usersService.deleteUser(req.params.id)
+      if (!response.user) {
         return res.status(404).json({ message: 'User not found' })
       }
-      res.json(user)
+      res.json(response)
     } catch (error) {
       res.status(500).json({ message: 'An error occurred while deleting the user' })
     }

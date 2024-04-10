@@ -16,11 +16,11 @@ export class UsersService {
 
   async updateUser(id, data) {
     const user = await User.findByIdAndUpdate(id, data, { new: true, runValidators: true })
-    return { message: 'User updated successfully' }
+    return { message: 'User updated successfully', user }
   }
 
   async deleteUser(id) {
     const user = await User.findByIdAndDelete(id)
-    return { message: 'User deleted successfully' }
+    return { message: 'User deleted successfully', user }
   }
 }
