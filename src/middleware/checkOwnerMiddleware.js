@@ -57,6 +57,9 @@ export class CheckOwnerMiddleware {
    */
   async checkOwnerWeatherData(req, res, next) {
     const weatherData = await Weather.findById(req.params.id)
+    if (!weatherData) {
+      return res.status(404).json({ message: 'Weather data not found' })
+    }
     const station = await Station.findById(weatherData.stationid)
     const isOwner = this.isOwner(req.user.sub, station.owner)
     if (!isOwner) {
