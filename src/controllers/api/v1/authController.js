@@ -103,7 +103,7 @@ export class AuthController {
    * @throws {Error} Throws an error if the token is invalid.
    */
   async refresh(req, res, next) {
-    const refreshToken = req.body.refreshToken
+    const refreshToken = req.cookies.refreshToken
     if (!refreshToken) {
       return res.sendStatus(401)
     }
@@ -123,7 +123,11 @@ export class AuthController {
         expiresIn: process.env.ACCESS_TOKEN_LIFE
       })
   
-      res.json({ access_token: accessToken })
+      res
+        .status(200)
+        .json({ 
+          access_token: accessToken 
+        })
     })
   }
 
