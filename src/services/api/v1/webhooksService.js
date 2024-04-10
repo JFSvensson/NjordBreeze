@@ -26,4 +26,9 @@ export class WebhookService {
       })
     })
   }
+
+  async removeWebhook(id) {
+    const webhook = await Webhook.findByIdAndDelete(id)
+    return webhook
+  }
 }
