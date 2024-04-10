@@ -36,4 +36,24 @@ export class WebhookController {
       res.status(500).json({ message: 'An error occurred while creating the webhook' })
     }
   }
+
+  /**
+   * Remove a webhook.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @returns {void}
+   * @throws {Error} Throws an error if the webhook is not removed.
+   * @throws {Error} Throws an error if an error occurs while removing the webhook.
+   */
+  async removeWebhook(req, res) {
+    try {
+      const webhook = await this.webhookService.removeWebhook(req.params.id)
+      if (!webhook) {
+        return res.status(404).json({ message: 'Webhook not found' })
+      }
+      res.status(201).json(webhook)
+    } catch (error) {
+      res.status(500).json({ message: 'An error occurred while removing the webhook' })
+    }
+  }
 }
