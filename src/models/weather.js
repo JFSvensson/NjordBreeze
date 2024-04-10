@@ -7,11 +7,15 @@
  */
 
 import mongoose from 'mongoose'
+import validator from 'validator'
+
+const { isDate } = validator
 
 const schema = new mongoose.Schema({
   date: {
     type: Date,
     required: true,
+    validate: [isDate, 'Please provide a valid date.']
   },
   temperature: {
     type: Number,
