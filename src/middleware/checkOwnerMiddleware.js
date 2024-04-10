@@ -37,6 +37,9 @@ export class CheckOwnerMiddleware {
    */
   async checkOwnerStation(req, res, next) {
     const station = await Station.findById(req.params.id)
+    if (!station) {
+      return res.status(404).json({ message: 'Station not found' })
+    }
     const isOwner = this.isOwner(req.user.sub, station.owner)
     if (!isOwner) {
       return res.status(403).json({ message: 'Forbidden: You can only modify your own station' })
