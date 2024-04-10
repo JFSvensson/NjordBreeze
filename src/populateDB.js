@@ -52,8 +52,7 @@ async function populateDB() {
       station = new Station({
         stationname,
         description: faker.lorem.sentence(),
-        latitude: faker.location.latitude({ max: 25, min: 10 }),
-        longitude: faker.location.longitude({ max: 70, min: 55 }),
+        position: faker.location.latitude({ max: 25, min: 10 }) + ', ' + faker.location.longitude({ max: 70, min: 55 }),
         owner: user.id
       })
 
