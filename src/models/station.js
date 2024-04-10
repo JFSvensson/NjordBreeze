@@ -25,15 +25,10 @@ const schema = new mongoose.Schema({
     trim: true,
     minlength: 1
   },
-  latitude: {
-    type: Number,
+  position: {
+    type: String,
     required: true,
-    validate: [isLatLong, 'Please provide a valid latitude.']
-  },
-  longitude: {
-    type: Number,
-    required: true,
-    validate: [isLatLong, 'Please provide a valid longitude.']
+    validate: [isLatLong, 'Please provide a valid latitude and longitude (lat, long).']
   },
   owner: {
     type: String,
