@@ -11,13 +11,11 @@
 // Import modules.
 import express from 'express'
 import { connectToDatabase } from './config/mongoose.js'
-// import session from 'express-session'
 import helmet from 'helmet'
 import logger from 'morgan'
 import cookieParser from 'cookie-parser'
 import swaggerUi from 'swagger-ui-express'
 import openapiSpecification from './openapiDef.js'
-import { HateoasMiddleware } from './middleware/hateoasMiddleware.js'
 import { router } from './routes/router.js'
 
 try {
@@ -26,9 +24,6 @@ try {
 
   // Create an Express application.
   const app = express()
-
-  // Set base URL for all relative URL:s in document.
-  // const baseURL = process.env.BASE_URL || '/'
 
   // Setup helmet to secure the application.
   app.use(helmet())
