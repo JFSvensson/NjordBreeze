@@ -7,6 +7,7 @@
  */
 
 import { StationsService } from '../../../services/api/v1/stationsService.js'
+import { AuthService } from '../../../services/api/v1/authService.js'
 
 /**
  * Handles requests for weather station data.
@@ -14,6 +15,7 @@ import { StationsService } from '../../../services/api/v1/stationsService.js'
 export class StationsController {
   constructor() {
     this.stationsService = new StationsService()
+    this.authService = new AuthService()
   }
 
   /**
@@ -46,6 +48,12 @@ export class StationsController {
    */
   async registerStation(req, res) {
     try {
+      const userId = req.user.sub
+      const userExists = await this.authService.verifyUserExistence(userId)
+      if (!userExists) {
+        return res.status(404).json({ message: 'User not found. Unable to create station.' })
+      }
+
       const data = {
         ...req.body,
         owner: req.user.sub
@@ -90,6 +98,11 @@ export class StationsController {
    */
   async updateStation(req, res) {
     try {
+      const userId = req.user.sub
+      const userExists = await this.authService.verifyUserExistence(userId)
+      if (!userExists) {
+        return res.status(404).json({ message: 'User not found. Unable to update station.' })
+      }
       const data = req.body
       const station = await this.stationsService.updateStation(req.params.id, data)
       if (!station) {
