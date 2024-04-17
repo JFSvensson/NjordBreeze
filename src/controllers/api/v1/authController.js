@@ -84,8 +84,6 @@ export class AuthController {
           refresh_token: refreshToken
         })
     } catch (error) {
-      // Authentication failed.
-      console.error(error)
       const err = createError(401)
       err.message = 'Credentials invalid or not provided.'
       err.cause = error
@@ -113,22 +111,28 @@ export class AuthController {
       return res.sendStatus(403)
     }
 
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-      if (err) {
-        return res.sendStatus(403)
+    try {
+      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+      const payload = {
+        sub: decoded.sub,
+        given_name: decoded.given_name,
+        family_name: decoded.family_name,
+        email: decoded.email
       }
 
-      const accessToken = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), {
+      const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), {
         algorithm: 'RS256',
         expiresIn: process.env.ACCESS_TOKEN_LIFE
       })
-  
+    
       res
         .status(200)
         .json({ 
           access_token: accessToken 
-        })
-    })
+      })
+    } catch (error) {
+      return res.sendStatus(403)
+    }
   }
 
   /**
