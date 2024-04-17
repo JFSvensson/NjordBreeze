@@ -18,4 +18,9 @@ export class AuthService {
     const user = await User.authenticate(username, passphrase)
     return user
   }
+
+  async verifyUserExistence(userId) {
+    const user = await User.findById(userId).exec()
+    return !!user
+  }
 }
