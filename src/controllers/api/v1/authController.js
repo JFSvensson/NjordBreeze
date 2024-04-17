@@ -8,6 +8,7 @@
 
 import jwt from 'jsonwebtoken'
 import createError from 'http-errors'
+import crypto from 'crypto'
 import { AuthService } from '../../../services/api/v1/authService.js'
 import { tokenBlacklist } from '../../../config/tokenBlacklist.js'
 
@@ -59,11 +60,13 @@ export class AuthController {
   async login (req, res, next) {
     try {
       const user = await this.authService.authenticateUser(req.body.username, req.body.passphrase)
+      const nonce = crypto.randomBytes(16).toString('hex') // Creates a nonce (number used once).
       const payload = {
         sub: user._id,
         given_name: user.firstName,
         family_name: user.lastName,
-        email: user.email
+        email: user.email,
+        nonce: nonce
       }
 
       const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), {
@@ -117,7 +120,8 @@ export class AuthController {
         sub: decoded.sub,
         given_name: decoded.given_name,
         family_name: decoded.family_name,
-        email: decoded.email
+        email: decoded.email,
+        nonce: decoded.nonce
       }
 
       const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), {
