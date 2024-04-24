@@ -7,9 +7,6 @@
  */
 
 import mongoose from 'mongoose'
-import validator from 'validator'
-
-const { isLatLong } = validator
 
 const schema = new mongoose.Schema({
   stationname: {
@@ -25,10 +22,16 @@ const schema = new mongoose.Schema({
     trim: true,
     minlength: 1
   },
-  position: {
-    type: String,
-    required: true,
-    validate: [isLatLong, 'Please provide a valid latitude and longitude (lat, long).']
+  location: {
+    type: { 
+      type: String, 
+      default: 'Point',
+      required: true
+    },
+    coordinates: { 
+      type: [Number], 
+      required: true
+    }
   },
   owner: {
     type: String,
@@ -54,5 +57,7 @@ const schema = new mongoose.Schema({
 schema.virtual('id').get(function () {
   return this._id.toHexString()
 })
+
+schema.index({ location: '2dsphere' })
 
 export const Station = mongoose.model('Station', schema)
