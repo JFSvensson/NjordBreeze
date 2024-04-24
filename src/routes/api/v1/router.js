@@ -12,6 +12,7 @@ import { router as weatherRouter } from './weatherRouter.js'
 import { router as stationsRouter } from './stationsRouter.js'
 import { router as usersRouter } from './usersRouter.js'
 import { router as webhooksRouter } from './webhooksRouter.js'
+import { router as smhiRouter } from './smhiRouter.js'
 import { HateoasMiddleware } from '../../../middleware/hateoasMiddleware.js'
 
 export const router = express.Router()
@@ -82,3 +83,4 @@ router.use('/weather', weatherRouter)
 router.use('/stations', stationsRouter)
 router.use('/users', usersRouter)
 router.use('/webhooks', webhooksRouter)
+router.use('/smhi', smhiRouter)
