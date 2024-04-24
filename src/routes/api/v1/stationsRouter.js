@@ -103,6 +103,37 @@ router.get(
 
 /**
  * @openapi
+ * /stations/nearest-station/{id}:
+ *  get:
+ *    summary: Get location for the station nearest to another specific weather station
+ *    description: Returns the location, in latitued and longitude, for another registered weather station nearest the specific weather station in the system.
+ *    tags:
+ *      - Weather Stations
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: string
+ *        description: The weather station's ID.
+ *    responses:
+ *      '200':
+ *        description: Successful response with weather station location.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/WeatherStation'
+ *      '404':
+ *        description: Weather station not found.
+ */
+router.get(
+  '/nearest-station/:id',
+  hateoas.addLinks, 
+ (req, res) => controller.getNearestStation(req, res)
+)
+
+/**
+ * @openapi
  * /stations/{id}:
  *  put:
  *    summary: Update information about a specific weather station

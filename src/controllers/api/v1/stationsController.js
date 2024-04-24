@@ -89,6 +89,26 @@ export class StationsController {
   }
 
   /**
+   * Get the nearest weather station.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @returns {void}
+   * @throws {Error} Throws an error if the nearest weather station is not found.
+   * @throws {Error} Throws an error if an error occurs while fetching the nearest weather station.
+   */
+  async getNearestStation(req, res) {
+    try {
+      const station = await this.stationsService.getNearestStation(req.params.id)
+      if (!station) {
+        return res.status(404).json({ message: 'Station not found' })
+      }
+      res.json(station)
+    } catch (error) {
+      res.status(500).json({ message: 'An error occurred while fetching the nearest weather station' })
+    }
+  }
+
+  /**
    * Update a specific weather station.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.

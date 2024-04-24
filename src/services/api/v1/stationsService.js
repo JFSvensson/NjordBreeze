@@ -24,6 +24,27 @@ export class StationsService {
     return station
   }
 
+  async getNearestStation(id) {
+    const station = await this.getStation(id)
+    try {
+      const nearestStation = await Station.findOne({
+        _id: { $ne: id },
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: station.location.coordinates
+            },
+            $maxDistance: 1000000
+          }
+        }
+      })
+      return nearestStation
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async updateStation(id, data) {
     const station = await Station.findByIdAndUpdate(id, data, { new: true, runValidators: true })
     return station
