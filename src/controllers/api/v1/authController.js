@@ -115,7 +115,7 @@ export class AuthController {
     }
 
     try {
-      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
       const payload = {
         sub: decoded.sub,
         given_name: decoded.given_name,
