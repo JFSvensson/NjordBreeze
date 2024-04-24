@@ -18,8 +18,7 @@ const schema = new mongoose.Schema({
   },
   stationname: {
     type: String,
-    required: [true, 'A unique station name is required.'],
-    unique: true,
+    required: [true, 'A station name is required.'],
     trim: true,
     minLength: [1, 'The station name must be of minimum length 1 characters.'],
   },
