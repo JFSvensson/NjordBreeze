@@ -8,6 +8,7 @@
  */
 
 import mongoose from 'mongoose'
+import { Station } from '../models/station.js' // adjust the path to match your project structure
 
 /**
  * Establishes a connection to a database.
@@ -38,7 +39,10 @@ export const connectToDatabase = async (connectionString) => {
   })
 
   // Connect to the server.
-  return mongoose.connect(connectionString)
+  await mongoose.connect(connectionString)
+
+  // Create indexes.
+  await Station.createIndexes()
 }
 
 /**
