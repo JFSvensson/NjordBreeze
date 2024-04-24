@@ -7,6 +7,7 @@
  */
 
 import { Station } from '../../../models/station.js'
+import { SMHIStation } from '../../../models/smhiStation.js'
 
 export class StationsService {
   async getStations() {
@@ -39,7 +40,19 @@ export class StationsService {
           }
         }
       })
-      return nearestStation
+      const nearestSMHIStation = await SMHIStation.findOne({ 
+        _id: { $ne: id },
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: station.location.coordinates
+            },
+            $maxDistance: 1000000
+          }
+        }
+      })
+      return { nearestStation, nearestSMHIStation }
     } catch (error) {
       console.log(error)
     }
