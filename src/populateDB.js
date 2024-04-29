@@ -14,7 +14,7 @@ import { Weather } from './models/weather.js'
  */
 async function populateDB() {
   try {
-    await connectToDatabase(process.env.DB_CONNECTION_STRING)
+    await connectToDatabase(process.env.DB_CONNECTION_STRING_NB)
 
     for (let i = 0; i < 50; i++) {
       let username

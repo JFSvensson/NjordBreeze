@@ -20,7 +20,7 @@ import { router } from './routes/router.js'
 
 try {
   // Connect to the database.
-  await connectToDatabase(process.env.DB_CONNECTION_STRING)
+  await connectToDatabase(process.env.DB_CONNECTION_STRING_NB)
 
   // Create an Express application.
   const app = express()
