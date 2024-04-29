@@ -27,7 +27,7 @@ export class AuthMiddleware {
     }
 
     try {
-      const userData= jwt.verify(token, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), { algorithms: ['RS256'] })
+      const userData= jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_NB.replace(/\\n/g, '\n'), { algorithms: ['RS256'] })
       req.user = userData // Add the user data to the request object for use in other middleware functions.
       next()
     } catch (error) {

@@ -69,12 +69,12 @@ export class AuthController {
         nonce: nonce
       }
 
-      const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), {
+      const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET_NB.replace(/\\n/g, '\n'), {
         algorithm: 'RS256',
         expiresIn: Number(process.env.ACCESS_TOKEN_LIFE)
       })
 
-      const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET.replace(/\\n/g, '\n'), {
+      const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET_NB.replace(/\\n/g, '\n'), {
         algorithm: 'RS256',
         expiresIn: Number(process.env.REFRESH_TOKEN_LIFE)
       })
@@ -115,7 +115,7 @@ export class AuthController {
     }
 
     try {
-      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_NB)
       const payload = {
         sub: decoded.sub,
         given_name: decoded.given_name,
@@ -124,7 +124,7 @@ export class AuthController {
         nonce: decoded.nonce
       }
 
-      const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET.replace(/\\n/g, '\n'), {
+      const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET_NB.replace(/\\n/g, '\n'), {
         algorithm: 'RS256',
         expiresIn: process.env.ACCESS_TOKEN_LIFE
       })
