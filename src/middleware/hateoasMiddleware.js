@@ -25,7 +25,7 @@ export class HateoasMiddleware {
         description: 'Current resource.'
       },
       documentation: {
-        href: 'https://svenssonom.se/njordbreeze/docs',
+        href: 'https://svenssonom.se/njordbreeze/docs/',
         rel: 'documentation',
         description: 'API documentation.'
       }
