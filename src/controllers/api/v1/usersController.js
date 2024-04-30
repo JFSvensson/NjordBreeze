@@ -72,7 +72,9 @@ export class UsersController {
       }
       res.json(response)
     } catch (error) {
-      res.status(500).json({ message: 'An error occurred while deleting the user' })
+      const err = createError(500)
+      err.message = 'An error occurred while deleting the user'
+      next(err)
     }
   }
 }
