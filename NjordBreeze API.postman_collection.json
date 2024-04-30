@@ -1,0 +1,1732 @@
+{
+	"info": {
+		"_postman_id": "3dafa683-880e-463a-b0c6-50e9325a23d8",
+		"name": "NjordBreeze API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24633506"
+	},
+	"item": [
+		{
+			"name": "Register user error - Wrong format for email",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Gives Validation error\", function () {\r",
+							"    pm.expect(responseJson.error).to.have.property('message').that.includes(\"validation error\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/auth/register\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Set user credentials\r",
+							"var uniqueId = \"user_\" + Date.now();\r",
+							"pm.environment.set(\"uniqueUsername\", uniqueId);\r",
+							"\r",
+							"var randomString = Math.random().toString(36);\r",
+							"var passphrase = (randomString.slice(2) + Math.random().toString(36).slice(2)).slice(0, 10);\r",
+							"pm.environment.set(\"passphrase\", passphrase);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{uniqueUsername}}\",\r\n    \"passphrase\": \"{{passphrase}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"email\": \"this is no email\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/auth/register\");\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"user_id\", responseJson.id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Set user credentials\r",
+							"var uniqueId = \"user_\" + Date.now();\r",
+							"pm.environment.set(\"uniqueUsername\", uniqueId);\r",
+							"\r",
+							"var randomString = Math.random().toString(36);\r",
+							"var passphrase = (randomString.slice(2) + Math.random().toString(36).slice(2)).slice(0, 10);\r",
+							"pm.environment.set(\"passphrase\", passphrase);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{uniqueUsername}}\",\r\n    \"passphrase\": \"{{passphrase}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"email\": \"{{$randomEmail}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/auth/login\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has an access token\", function () {\r",
+							"    pm.expect(responseJson).to.have.property(\"access_token\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a refresh token\", function () {\r",
+							"    pm.expect(responseJson).to.have.property(\"refresh_token\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"access_token\", responseJson.access_token);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"console.log(pm.environment.get(\"uniqueUsername\"));\r",
+							"console.log(pm.environment.get(\"passphrase\"));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{uniqueUsername}}\",\r\n    \"passphrase\": \"{{passphrase}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login user error - User not found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Gives Credentials error\", function () {\r",
+							"    pm.expect(responseJson.error).to.have.property('message').that.includes(\"Credentials invalid\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/auth/login\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var uniqueErrorId = \"user_\" + Date.now();\r",
+							"pm.environment.set(\"uniqueUsernameError\", uniqueErrorId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"None Existing User\",\r\n    \"passphrase\": \"{{passphrase}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login user error - Wrong passphrase",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Gives Credentials error\", function () {\r",
+							"    pm.expect(responseJson.error).to.have.property('message').that.includes(\"Credentials invalid\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/auth/login\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var randomString = Math.random().toString(36);\r",
+							"var passphraseError = (randomString.slice(2) + Math.random().toString(36).slice(2)).slice(0, 10);\r",
+							"pm.environment.set(\"passphraseError\", passphraseError);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{uniqueUsername}}\",\r\n    \"passphrase\": \"Wrong passphrase\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/auth/logout\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{uniqueUsername}}\",\r\n    \"passphrase\": \"{{passphrase}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/logout",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout user - again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Token is blacklisted\", function () {\r",
+							"    pm.expect(responseJson.message).to.eql(\"Token is blacklisted\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/auth/logout\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{uniqueUsername}}\",\r\n    \"passphrase\": \"{{passphrase}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/logout",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login user - again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/auth/login\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has an access token\", function () {\r",
+							"    pm.expect(responseJson).to.have.property(\"access_token\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a refresh token\", function () {\r",
+							"    pm.expect(responseJson).to.have.property(\"refresh_token\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"access_token\", responseJson.access_token);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{uniqueUsername}}\",\r\n    \"passphrase\": \"{{passphrase}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has an access token\", function () {\r",
+							"    pm.expect(responseJson).to.have.property(\"access_token\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"access_token\", responseJson.access_token);\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/auth/refresh\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/auth/refresh",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/users\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/{{user_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/users\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{$randomEmail}}\" \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/{{user_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register station",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Set random latitude in Sweden.\r",
+							"var latitude = (Math.random() * (70 - 55) + 55).toFixed(6);\r",
+							"pm.environment.set(\"latitude\", latitude);\r",
+							"\r",
+							"// Set random longitude in Sweden.\r",
+							"var longitude = (Math.random() * (25 - 10) + 10).toFixed(6); \r",
+							"pm.environment.set(\"longitude\", longitude);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/station\");\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"station_id\", responseJson.id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stationname\": \"{{$randomCity}}\",\r\n    \"description\": \"A test station added by Postman.\",\r\n    \"location\": {\r\n        \"type\": \"Point\",\r\n        \"coordinates\": [{{longitude}}, {{latitude}}]\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Station",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/station\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stations/{{station_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						"{{station_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register another station",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Set random latitude in Sweden.\r",
+							"var latitude = (Math.random() * (70 - 55) + 55).toFixed(6);\r",
+							"pm.environment.set(\"latitude\", latitude);\r",
+							"\r",
+							"// Set random longitude in Sweden.\r",
+							"var longitude = (Math.random() * (25 - 10) + 10).toFixed(6); \r",
+							"pm.environment.set(\"longitude\", longitude);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/station\");\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"station_id\", responseJson.id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stationname\": \"{{$randomCity}}\",\r\n    \"description\": \"A test station added by Postman.\",\r\n    \"location\": {\r\n        \"type\": \"Point\",\r\n        \"coordinates\": [{{longitude}}, {{latitude}}]\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get nearest station",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/station\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stations/nearest-station/{{station_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						"nearest-station",
+						"{{station_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Stations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/stations\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stations/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update station",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/stations\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stationname\": \"{{$randomCity}}\",\r\n    \"description\": \"This station has been updated.\",\r\n    \"location\": {\r\n        \"type\": \"Point\",\r\n        \"coordinates\": [{{longitude}}, {{latitude}}]\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stations/{{station_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						"{{station_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add weather data",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function generateRandomDate() {\r",
+							"    const start = new Date(new Date().setFullYear(new Date().getFullYear() - 1));\r",
+							"    const end = new Date();\r",
+							"    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toISOString().split('T')[0];\r",
+							"}\r",
+							"\r",
+							"function generateRandomTemperature() {\r",
+							"    const minTemp = -30;\r",
+							"    const maxTemp = 30;\r",
+							"    return Math.floor(Math.random() * (maxTemp - minTemp + 1) + minTemp);\r",
+							"}\r",
+							"\r",
+							"function generateRandomWindSpeed() {\r",
+							"    const maxWindSpeed = 25;\r",
+							"    return Math.floor(Math.random() * maxWindSpeed);\r",
+							"}\r",
+							"\r",
+							"function generateRandomWindDirection() {\r",
+							"    return Math.floor(Math.random() * 360);\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"randomDate\", generateRandomDate());\r",
+							"pm.environment.set(\"randomTemperature\", generateRandomTemperature().toString());\r",
+							"pm.environment.set(\"randomWindSpeed\", generateRandomWindSpeed().toString());\r",
+							"pm.environment.set(\"randomWindDirection\", generateRandomWindDirection().toString());\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/weather\");\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"weatherdata_id\", responseJson.id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date\": \"{{randomDate}}\",\r\n    \"temperature\": \"{{randomTemperature}}\",\r\n    \"windspeed\": \"{{randomWindSpeed}}\",\r\n    \"winddirection\": \"{{randomWindDirection}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/weather/{{station_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"weather",
+						"{{station_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all weather data from one station",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/weather\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/weather/stations/{{station_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"weather",
+						"stations",
+						"{{station_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get weather data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/weather\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/weather/{{weatherdata_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"weather",
+						"{{weatherdata_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update weather data",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function generateRandomDate() {\r",
+							"    const start = new Date(new Date().setFullYear(new Date().getFullYear() - 1));\r",
+							"    const end = new Date();\r",
+							"    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toISOString().split('T')[0];\r",
+							"}\r",
+							"\r",
+							"function generateRandomTemperature() {\r",
+							"    const minTemp = -30;\r",
+							"    const maxTemp = 30;\r",
+							"    return Math.floor(Math.random() * (maxTemp - minTemp + 1) + minTemp);\r",
+							"}\r",
+							"\r",
+							"function generateRandomWindSpeed() {\r",
+							"    const maxWindSpeed = 25;\r",
+							"    return Math.floor(Math.random() * maxWindSpeed);\r",
+							"}\r",
+							"\r",
+							"function generateRandomWindDirection() {\r",
+							"    return Math.floor(Math.random() * 360);\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"randomDate\", generateRandomDate());\r",
+							"pm.environment.set(\"randomTemperature\", generateRandomTemperature().toString());\r",
+							"pm.environment.set(\"randomWindSpeed\", generateRandomWindSpeed().toString());\r",
+							"pm.environment.set(\"randomWindDirection\", generateRandomWindDirection().toString());\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/weather\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date\": \"{{randomDate}}\",\r\n    \"temperature\": \"{{randomTemperature}}\",\r\n    \"windspeed\": \"{{randomWindSpeed}}\",\r\n    \"winddirection\": \"{{randomWindDirection}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/weather/{{weatherdata_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"weather",
+						"{{weatherdata_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get current weather from a station",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData._links.self).to.have.property('href').that.includes(\"/api/v1/weather\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/weather/current/{{station_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"weather",
+						"current",
+						"{{station_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register webhook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData._links.self).to.have.property('href').that.includes(\"/api/v1/webhooks\");\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"webhook_id\", responseJson.id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"url\": \"https://webhook.site/246db9c0-34f3-4537-8f02-467b6494c967\",\r\n    \"stationid\": \"{{station_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/webhooks/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"webhooks",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove webhook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData._links.self).to.have.property('href').that.includes(\"/api/v1/webhooks\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/webhooks/remove/{{webhook_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"webhooks",
+						"remove",
+						"{{webhook_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete weather data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/weather\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/weather/{{weatherdata_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"weather",
+						"{{weatherdata_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete station",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/stations\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stations/{{station_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						"{{station_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/users\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/{{user_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get SMHI stations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contains links for self and documentation\", function () {\r",
+							"    pm.expect(responseJson._links.self).to.have.property('href').that.includes(\"/api/v1/smhi/stations\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/smhi/stations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"smhi",
+						"stations"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"const responseJson = pm.response.json();\r",
+					"\r",
+					"pm.test(\"Contains links for self and documentation\", function () {\r",
+					"    pm.expect(responseJson).to.have.property('_links');\r",
+					"    pm.expect(responseJson._links).to.have.property('self');\r",
+					"    pm.expect(responseJson._links.self).to.have.property('href');\r",
+					"    pm.expect(responseJson._links).to.have.property('documentation');\r",
+					"    pm.expect(responseJson._links.documentation).to.have.property('href').that.includes(\"https://svenssonom.se/njordbreeze/docs/\");\r",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://svenssonom.se/njordbreeze/api/v1",
+			"type": "string"
+		}
+	]
+}
