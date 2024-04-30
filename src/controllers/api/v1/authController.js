@@ -89,8 +89,6 @@ export class AuthController {
     } catch (error) {
       const err = createError(401)
       err.message = 'Credentials invalid or not provided.'
-      err.cause = error
-
       next(err)
     }
   }
