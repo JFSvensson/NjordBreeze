@@ -12,7 +12,7 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
 servers:
-  - url: https://cscloud8-57.lnu.se/njordbreeze/
+  - url: https://svenssonom.se/njordbreeze/api/v1
     description: Production server
 paths:
   /auth/register:
@@ -74,11 +74,17 @@ paths:
         '401':
           description: Unauthorized.
   /auth/refresh:
-    get:
+    post:
       summary: Refresh access token
       description: Refreshes the access token for the user.
       tags:
         - Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshToken'
       responses:
         '200':
           description: Access token refreshed successfully.
@@ -87,7 +93,9 @@ paths:
   /:
     get:
       summary: Get API status
-      description: Returns the status of the API.
+      description: >-
+        Returns the status of the API and provides dynamical links to other
+        endpoints.
       tags:
         - Status
       responses:
@@ -106,6 +114,49 @@ paths:
                   documentation:
                     type: string
                     example: https://cscloud8-57.lnu.se/njordbreeze/docs
+                  _links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        description: The current endpoint.
+                        example: /
+                      auth:
+                        type: string
+                        description: The authentication endpoint.
+                        example: /auth
+                      weather:
+                        type: string
+                        description: The weather data endpoint.
+                        example: /weather
+                      stations:
+                        type: string
+                        description: The weather station data endpoint.
+                        example: /stations
+                      users:
+                        type: string
+                        description: The user data endpoint.
+                        example: /users
+                      webhooks:
+                        type: string
+                        example: /webhooks
+  /smhi/stations:
+    get:
+      summary: Get information about all active SMHI weather stations
+      description: >-
+        Returns information about a currently active SMHI stations (those that
+        has reported temperature data for the last hour).
+      tags:
+        - SMHI Weather Stations
+      responses:
+        '200':
+          description: Successful response with SMHI weather station information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMHIWeatherStation'
+        '404':
+          description: SMHI weather station not found.
   /stations:
     get:
       summary: Get all weather stations
@@ -199,6 +250,30 @@ paths:
           description: Weather station deleted successfully.
         '401':
           description: Unauthorized.
+  /stations/nearest-station/{id}:
+    get:
+      summary: Get location for the station nearest to another specific weather station
+      description: >-
+        Returns the location, in latitued and longitude, for another registered
+        weather station nearest the specific weather station in the system.
+      tags:
+        - Weather Stations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The weather station's ID.
+      responses:
+        '200':
+          description: Successful response with weather station location.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherStation'
+        '404':
+          description: Weather station not found.
   /users/{id}:
     get:
       summary: Get information about a specific user
@@ -261,21 +336,144 @@ paths:
           description: User deleted successfully.
         '404':
           description: User not found.
-  /weather/current:
+  /weather/stations/{stationId}:
     get:
-      summary: Get current weather conditions
+      summary: Get a all weather data from a specific station.
+      description: Returns all weather data from a specific station.
+      tags:
+        - Weather Data
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The weather station's ID.
+      responses:
+        '200':
+          description: A list of weather data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherData'
+        '404':
+          description: Weather data not found.
+  /weather/{id}:
+    get:
+      summary: Get a specific set of weather data.
+      description: Returns a specific set of weather data from a specific station.
+      tags:
+        - Weather Data
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The weather station's ID.
+      responses:
+        '200':
+          description: A list of weather data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherData'
+        '404':
+          description: Weather data not found.
+    post:
+      summary: Add new weather data to a station
       description: >-
-        Returns current weather conditions from SMHI open data for a specified
-        location.
+        Adds new weather data (temperature, windspeed and winddirection) to a
+        specific weather station in the system. User needs to be authenticated
+        and the owner of the station to add data.
+      tags:
+        - Weather Data
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The weather station's ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WeatherData'
+      responses:
+        '201':
+          description: Weather data added successfully.
+        '401':
+          description: Unauthorized.
+    put:
+      summary: Update weather data.
+      description: >-
+        Update weather data (temperature, windspeed and winddirection) for a
+        specific dataset. User needs to be authenticated and the owner of the
+        station to add data.
+      tags:
+        - Weather Data
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The weather data's ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WeatherData'
+      responses:
+        '201':
+          description: Weather data updated successfully.
+        '401':
+          description: Unauthorized.
+    delete:
+      summary: Delete weather data.
+      description: >-
+        Delete a specific dataset. User needs to be authenticated and the owner
+        of the station to add data.
+      tags:
+        - Weather Data
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The weather data's ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WeatherData'
+      responses:
+        '201':
+          description: Weather data updated successfully.
+        '401':
+          description: Unauthorized.
+  /weather/current/{id}:
+    get:
+      summary: Get current weather conditions.
+      description: >-
+        Returns current weather conditions, being the data most recently added,
+        for a specified location.
       tags:
         - Weather Data
       parameters:
         - in: query
-          name: location
+          name: stationid
           schema:
             type: string
           required: true
-          description: The location to fetch current weather conditions for.
+          description: >-
+            The id for the weather station to fetch current weather conditions
+            for.
       responses:
         '200':
           description: Successful response with current weather conditions.
@@ -285,6 +483,43 @@ paths:
                 $ref: '#/components/schemas/WeatherData'
         '404':
           description: Location not found.
+  /webhooks/register:
+    post:
+      summary: Register a webhook
+      description: >-
+        Adds a new webhook that check for changes in temperature, windspeed or
+        winddirection at a specific weather station in the system.
+      tags:
+        - Webhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Webhook'
+      responses:
+        '201':
+          description: Webhook registered successfully.
+        '404':
+          description: Weather station not found.
+  /webhooks/remove/{id}:
+    delete:
+      summary: Remove a webhook
+      description: Removes a webhook.
+      tags:
+        - Webhook
+      parameters:
+        - name: webhookId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The webhook's ID.
+      responses:
+        '201':
+          description: Webhook removed successfully.
+        '404':
+          description: Webhook not found.
 components:
   schemas:
     NewUser:
@@ -297,6 +532,48 @@ components:
           type: string
           format: email
           description: The user's email address.
+    RefreshToken:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          description: The refresh token for the user.
+    SMHIWeatherStation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier for the weather station.
+        stationname:
+          type: string
+          description: The name of the weather station.
+        key:
+          type: string
+          description: The key provided by SMHI.
+        location:
+          type: object
+          required:
+            - type
+            - coordinates
+          properties:
+            type:
+              type: string
+              description: The type of the GeoJSON object, e.g., Point.
+              enum:
+                - Point
+              default: Point
+            coordinates:
+              type: array
+              description: A longitude and latitude coordinates of the station.
+              minItems: 2
+              maxItems: 2
+              items:
+                type: number
+                format: double
+        owner:
+          type: string
+          description: The owner of the weather station, SMHI.
     WeatherStation:
       type: object
       properties:
@@ -304,21 +581,36 @@ components:
           type: string
           format: uuid
           description: The unique identifier for the weather station.
-        name:
+        stationname:
           type: string
           description: The name of the weather station.
-        location:
+        description:
           type: string
-          description: The location of the weather station.
+          description: A description of the weather station.
+        latitude:
+          type: number
+          description: The latitude of the weather station.
+        longitude:
+          type: number
+          description: The longitude of the weather station.
+        owner:
+          type: string
+          description: The owner of the weather station.
     WeatherStationRegistration:
       type: object
       properties:
-        name:
+        stationname:
           type: string
           description: The name of the weather station.
-        location:
+        description:
           type: string
-          description: The location of the weather station.
+          description: A description of the weather station.
+        latitude:
+          type: number
+          description: The latitude of the weather station.
+        longitude:
+          type: number
+          description: The longitude of the weather station.
     User:
       type: object
       properties:
@@ -343,4 +635,22 @@ components:
           type: number
           format: float
           description: Wind speed in m/s.
+        windDirection:
+          type: number
+          format: float
+          description: >-
+            Wind direction in degrees. 360 degrees is north, 90 degrees is east,
+            180 degrees is south, and 270 degrees is west. 0 degrees is calm.
+        stationid:
+          type: string
+          description: Unique identifier for the station.
+    Webhook:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL to notify.
+        stationid:
+          type: string
+          description: Id for the weather station to be monitored for changes.
 tags: []
