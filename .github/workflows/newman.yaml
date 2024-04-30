@@ -15,4 +15,4 @@ jobs:
       - uses: actions/checkout@master
       - uses: matt-ball/newman-action@master
         with:
-          collection: postman_collection.json
+          collection: NjordBreeze API.postman_collection.json
