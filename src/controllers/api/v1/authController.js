@@ -87,11 +87,7 @@ export class AuthController {
           refresh_token: refreshToken
         })
     } catch (error) {
-      const err = createError(401)
-      err.message = 'Credentials invalid or not provided.'
-      err.cause = error
-
-      next(err)
+      return res.sendStatus(401)
     }
   }
 
