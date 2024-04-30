@@ -21,7 +21,7 @@ const options = {
     },
     servers: [
       {
-        url: 'https://cscloud8-57.lnu.se/njordbreeze/',
+        url: 'https://svenssonom.se/njordbreeze/api/v1',
         description: 'Production server'
       }
     ]
