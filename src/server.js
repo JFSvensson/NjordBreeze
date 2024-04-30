@@ -82,7 +82,7 @@ try {
     // In production, just send the status code.
     return res
       .status(err.status || 500)
-      .end()
+      .json({ error: err })
   })
 
   // Starts the HTTP server listening for connections.
