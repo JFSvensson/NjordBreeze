@@ -34,7 +34,7 @@ export class HateoasMiddleware {
     // Define dynamic links based on the request.
     let dynamicLinks = {}
     
-    if (req.originalUrl === '/api/v1/') {
+    if (req.originalUrl === '/api/v1') {
       dynamicLinks.authRegister = {
         href: '/auth/register',
         rel: 'auth',
