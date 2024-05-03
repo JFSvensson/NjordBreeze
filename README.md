@@ -60,8 +60,12 @@ Refer to the Swagger documentation at `https://svenssonom.se/njordbreeze/docs/` 
 Run the provided Postman collection using Newman to execute integration tests.
 
 ```bash
-newman run path_to_postman_collection.json
+newman run NjordBreeze API.postman_collection.json
 ```
+
+### Bugs and errors
+
+The Postman collections tends to fail at deleting user, weather data and/or weather station. It is currently unknown why, but it doesn't happen all the time so do run with the  "--iteration-count 10".
 
 ## Contributing
 
