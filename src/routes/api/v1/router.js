@@ -40,7 +40,7 @@ const hateoas = new HateoasMiddleware()
  *                   example: Welcome to the NjordBreeze API. Use our endpoints to interact with weather data.
  *                 documentation:
  *                   type: string
- *                   example: https://cscloud8-57.lnu.se/njordbreeze/docs
+ *                   example: https://svenssonom.se/njordbreeze/docs
  *                 _links:
  *                   type: object
  *                   properties:
