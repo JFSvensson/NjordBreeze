@@ -136,9 +136,18 @@ router.post(
  *   NewUser:
  *    type: object
  *    properties:
- *     name:
+ *     username:
  *      type: string
- *      description: The user's full name.
+ *      description: The username of the user.
+ *     passphrase:
+ *      type: string
+ *      description: The passphrase of the user.
+ *     firstname:
+ *      type: string
+ *      description: The user's first name.
+ *     lastname:
+ *      type: string
+ *      description: The user's last name.
  *     email:
  *      type: string
  *      format: email
