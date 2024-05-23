@@ -142,10 +142,10 @@ router.post(
  *     passphrase:
  *      type: string
  *      description: The passphrase of the user.
- *     firstname:
+ *     firstName:
  *      type: string
  *      description: The user's first name.
- *     lastname:
+ *     lastName:
  *      type: string
  *      description: The user's last name.
  *     email:
