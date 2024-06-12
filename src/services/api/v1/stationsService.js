@@ -8,7 +8,7 @@
 
 import { Station } from '../../../models/station.js'
 import { SMHIStation } from '../../../models/smhiStation.js'
-import { validateId, validateStationData } from './validation.js'
+import { validateId, validateStationData } from '../../../utils/validation.js'
 
 export class StationsService {
 
