@@ -8,24 +8,29 @@
 
 import { Station } from '../../../models/station.js'
 import { SMHIStation } from '../../../models/smhiStation.js'
+import { validateId, validateStationData } from './validation.js'
 
 export class StationsService {
+
   async getStations() {
     const stations = await Station.find()
     return stations
   }
 
   async registerStation(data) {
+    validateStationData(data)
     const station = await Station.create(data)
     return station
   }
 
   async getStation(id) {
+    await validateId(id)
     const station = await Station.findById(id)
     return station
   }
 
   async getNearestStation(id) {
+    await validateId(id)
     const station = await this.getStation(id)
     try {
       const nearestStation = await Station.findOne({
@@ -59,11 +64,13 @@ export class StationsService {
   }
 
   async updateStation(id, data) {
+    await validateId(id)
     const station = await Station.findByIdAndUpdate(id, data, { new: true, runValidators: true })
     return station
   }
 
   async deleteStation(id) {
+    await validateId(id)
     const station = await Station.findByIdAndDelete(id)
     return station
   }
