@@ -63,7 +63,9 @@ try {
   app.use('/', router)
 
   // Error handler.
-  app.use(function (err, req, res, next) {
+  app.use((err, req, res, next) => {
+    console.error(err.stack)
+
     // 404 Not Found.
     if (err.status === 404) {
       return res
@@ -82,7 +84,7 @@ try {
     // In production, just send the status code.
     return res
       .status(err.status || 500)
-      .json({ error: err })
+      .send('Something broke!')
   })
 
   // Starts the HTTP server listening for connections.
