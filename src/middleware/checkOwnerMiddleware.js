@@ -8,6 +8,7 @@
 
 import { Station } from '../models/station.js'
 import { Weather } from '../models/weather.js'
+import { validateId } from '../utils/validation.js'
 
 export class CheckOwnerMiddleware {
 
@@ -20,6 +21,7 @@ export class CheckOwnerMiddleware {
    * @returns {void}
    */
   async checkOwner(req, res, next) {
+    await validateId(req.params.id)
     const isOwner = this.isOwner(req.user.sub, req.params.id)
     if (!isOwner) {
       return res.status(403).json({ message: 'Forbidden: You can only access your own data' })
@@ -36,6 +38,7 @@ export class CheckOwnerMiddleware {
    * @returns {void}
    */
   async checkOwnerStation(req, res, next) {
+    await validateId(req.params.id)
     const station = await Station.findById(req.params.id)
     if (!station) {
       return res.status(404).json({ message: 'Station not found' })
@@ -56,6 +59,7 @@ export class CheckOwnerMiddleware {
    * @returns {void}
    */
   async checkOwnerWeatherData(req, res, next) {
+    await validateId(req.params.id)
     const weatherData = await Weather.findById(req.params.id)
     if (!weatherData) {
       return res.status(404).json({ message: 'Weather data not found' })
