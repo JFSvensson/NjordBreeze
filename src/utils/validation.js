@@ -9,7 +9,7 @@
 import mongoose from 'mongoose'
 
 export function validateId(id) {
-  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+  if (!id || typeof id !== 'string' || id.length !== 24 || !mongoose.Types.ObjectId.isValid(id)) {
     throw new Error('Invalid id')
   }
 }
